@@ -19,7 +19,7 @@ const blogPosts = [
       "Learn how to create an intelligent chatbot using the latest AI technologies and modern web development practices.",
     category: "Tutorial",
     readTime: "15 min read",
-    author: "Sarah Chen",
+    author: "Sarah Cheung",
     date: "2024-01-15",
     slug: "building-ai-chatbot-nextjs-openai",
     featured: true,
