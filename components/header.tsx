@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Brain } from "lucide-react"
+import { Menu, X } from "lucide-react"
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -22,7 +23,13 @@ export default function Header() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Brain className="h-8 w-8 text-blue-600" />
+              <Image 
+                src="/logo.svg" 
+                alt="HowToBuild.app Logo" 
+                width={32} 
+                height={32}
+                className="h-8 w-8"
+              />
               <span className="text-xl font-bold text-gray-900">HowToBuild.app</span>
             </Link>
           </div>

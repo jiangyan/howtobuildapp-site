@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Brain, Github, Twitter, Linkedin, Mail } from "lucide-react"
+import Image from "next/image"
+import { Github, Twitter, Linkedin, Mail } from "lucide-react"
 
 export default function Footer() {
   const navigation = {
@@ -36,7 +37,13 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center space-x-2 mb-4">
-              <Brain className="h-8 w-8 text-blue-400" />
+              <Image 
+                src="/logo-white.svg" 
+                alt="HowToBuild.app Logo" 
+                width={32} 
+                height={32}
+                className="h-8 w-8"
+              />
               <span className="text-xl font-bold">HowToBuild.app</span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
