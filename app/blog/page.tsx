@@ -20,7 +20,7 @@ const blogPosts = [
     category: "Tutorial",
     readTime: "15 min read",
     author: "Sarah Cheung",
-    date: "2024-01-15",
+    date: "2025-06-18",
     slug: "building-ai-chatbot-nextjs-openai",
     featured: true,
   },
