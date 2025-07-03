@@ -30,7 +30,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Information */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Let's Start a Conversation</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Let's Start a Conversation Together</h2>
               <p className="text-gray-600 mb-8">
                 Whether you're looking for guidance on AI implementation, have feedback about our content, or want to
                 explore partnership opportunities, we're here to help.
