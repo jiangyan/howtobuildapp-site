@@ -28,7 +28,7 @@ export default function Hero() {
 
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Button asChild size="lg" className="text-lg px-8 py-3">
-              <Link href="/tutorials">
+              <Link href="/Claude_Code_Guide.html">
                 Get Started
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
