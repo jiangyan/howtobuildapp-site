@@ -42,10 +42,12 @@ export default function Hero() {
         {/* Feature highlights */}
         <div className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-3">
           <div className="text-center">
-            <div className="mx-auto h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Code className="h-6 w-6 text-blue-600" />
-            </div>
-            <h3 className="mt-4 text-lg font-semibold text-gray-900">Practical Tutorials</h3>
+            <Link href="/tutorials" className="group">
+              <div className="mx-auto h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                <Code className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">Practical Tutorials</h3>
+            </Link>
             <p className="mt-2 text-gray-600">Step-by-step guides to build real AI applications</p>
           </div>
 
