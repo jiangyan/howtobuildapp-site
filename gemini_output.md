@@ -1,0 +1,1 @@
+Okay, I'll update the hero section text. First, I'll check `components/hero.tsx` to confirm it's the right file.Okay, I'm replacing "Get Started" with "Claude Guide" in the hero component.I've changed "Get Started" to "Claude Guide" in `components/hero.tsx` and will now output the file.Text replaced. Providing the modified file's full content now.
