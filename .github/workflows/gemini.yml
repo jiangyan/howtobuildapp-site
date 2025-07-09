@@ -1,0 +1,267 @@
+# .github/workflows/gemini-mention.yml
+#
+# 🤖 Gemini @mention Automated Workflow 🤖
+#
+# How to use:
+# 1. Create an issue or comment on existing issue
+# 2. Mention @gemini with your request
+# 3. Add --auto-merge flag to automatically merge the PR
+#
+# Examples:
+# - "@gemini fix the mobile menu bug"
+# - "@gemini add dark mode toggle --auto-merge"
+# - "@gemini refactor this function to use TypeScript"
+#
+name: 'Gemini @mention Handler'
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created, edited]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
+
+jobs:
+  gemini_mention:
+    # Only run if @gemini is mentioned
+    if: contains(github.event.issue.body, '@gemini') || contains(github.event.comment.body, '@gemini')
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Determine the source (issue or comment)
+      - name: Set up context
+        id: context
+        run: |
+          if [ "${{ github.event_name }}" = "issue_comment" ]; then
+            echo "body=${{ github.event.comment.body }}" >> $GITHUB_OUTPUT
+            echo "type=comment" >> $GITHUB_OUTPUT
+            echo "author=${{ github.event.comment.user.login }}" >> $GITHUB_OUTPUT
+          else
+            echo "body=${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
+            echo "type=issue" >> $GITHUB_OUTPUT
+            echo "author=${{ github.event.issue.user.login }}" >> $GITHUB_OUTPUT
+          fi
+      
+      # Step 2: Extract the Gemini command
+      - name: Extract command
+        id: extract
+        run: |
+          # Extract text after @gemini
+          BODY="${{ steps.context.outputs.body }}"
+          
+          # Extract the command (everything after @gemini until end or next @mention)
+          COMMAND=$(echo "$BODY" | grep -oP '@gemini\s+\K[^@]*' | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          
+          # Check if auto-merge is requested
+          if echo "$COMMAND" | grep -q -- "--auto-merge"; then
+            echo "auto_merge=true" >> $GITHUB_OUTPUT
+            # Remove --auto-merge from command
+            COMMAND=$(echo "$COMMAND" | sed 's/--auto-merge//g' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          else
+            echo "auto_merge=false" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "command=$COMMAND" >> $GITHUB_OUTPUT
+          echo "Extracted command: $COMMAND"
+      
+      # Step 3: React to the mention
+      - name: Add reaction
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const context_type = '${{ steps.context.outputs.type }}';
+            if (context_type === 'comment') {
+              await github.rest.reactions.createForIssueComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: context.payload.comment.id,
+                content: 'eyes'
+              });
+            }
+      
+      # Step 4: Checkout repository
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      # Step 5: Install Gemini CLI
+      - name: Setup Gemini
+        run: |
+          npm install -g @google/gemini-cli@latest
+          gemini --version
+      
+      # Step 6: Generate solution
+      - name: Run Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          # Build comprehensive prompt
+          PROMPT="You are an expert software engineer working on this repository.
+          
+          Context:
+          - Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
+          - Issue Description: ${{ github.event.issue.body }}
+          - User Request: ${{ steps.extract.outputs.command }}
+          
+          Task: ${{ steps.extract.outputs.command }}
+          
+          Instructions:
+          1. Analyze the issue and the specific request
+          2. Generate the complete code to fulfill the request
+          3. For each file, use this exact format:
+          ---
+          path/to/file.ext
+          ---
+          [complete file content]
+          
+          4. Include only production-ready code
+          5. Follow the project's existing patterns and style"
+          
+          # Add repository context if GEMINI.md exists
+          if [ -f "GEMINI.md" ]; then
+            PROMPT="$PROMPT
+            
+          Project Context:
+          $(cat GEMINI.md)"
+          fi
+          
+          gemini --yolo --prompt "$PROMPT" > gemini_output.md
+      
+      # Step 7: Apply changes
+      - name: Apply changes
+        id: apply
+        run: |
+          # Parse and apply changes (same as before)
+          awk '
+            BEGIN { in_file = 0; current_file = "" }
+            /^---$/ {
+              if (in_file) {
+                close(current_file)
+                in_file = 0
+              } else {
+                getline current_file
+                if (current_file != "") {
+                  dir = current_file
+                  gsub(/\/[^\/]*$/, "", dir)
+                  if (dir != current_file) {
+                    system("mkdir -p \"" dir "\"")
+                  }
+                  in_file = 1
+                  print "Updating: " current_file
+                }
+              }
+              next
+            }
+            in_file && current_file != "" {
+              print $0 > current_file
+            }
+          ' gemini_output.md
+          
+          # Check for changes
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Files changed:"
+            git diff --name-only
+          fi
+      
+      # Step 8: Create Pull Request
+      - name: Create PR
+        if: steps.apply.outputs.has_changes == 'true'
+        id: create_pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "🤖 Gemini: ${{ steps.extract.outputs.command }}"
+          title: "🤖 Gemini: ${{ steps.extract.outputs.command }}"
+          body: |
+            ## 🤖 Automated Changes by Gemini
+            
+            This PR was created in response to @gemini mention by @${{ steps.context.outputs.author }}
+            
+            ### Request
+            ```
+            ${{ steps.extract.outputs.command }}
+            ```
+            
+            ### Context
+            - Issue: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}
+            - Triggered by: @${{ steps.context.outputs.author }}
+            - Auto-merge: ${{ steps.extract.outputs.auto_merge }}
+            
+            ### Changes
+            Please review the changes before merging.
+            
+            ---
+            *Generated by Gemini AI*
+          branch: "gemini-auto-${{ github.event.issue.number }}-${{ github.run_number }}"
+          delete-branch: true
+          labels: |
+            gemini
+            automated
+      
+      # Step 9: Get PR details
+      - name: Get PR number
+        if: steps.apply.outputs.has_changes == 'true'
+        id: pr_details
+        run: |
+          sleep 3
+          PR_NUMBER=$(gh pr list --head "gemini-auto-${{ github.event.issue.number }}-${{ github.run_number }}" --json number -q '.[0].number')
+          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "url=https://github.com/${{ github.repository }}/pull/$PR_NUMBER" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Step 10: Comment with results
+      - name: Comment results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const hasChanges = '${{ steps.apply.outputs.has_changes }}' === 'true';
+            const autoMerge = '${{ steps.extract.outputs.auto_merge }}' === 'true';
+            
+            let body;
+            if (hasChanges) {
+              const prUrl = '${{ steps.pr_details.outputs.url }}';
+              body = `✅ @${{ steps.context.outputs.author }} I've created a pull request: ${prUrl}\n\n`;
+              
+              if (autoMerge) {
+                body += '🔄 Auto-merge is enabled. The PR will be merged automatically once checks pass.';
+              } else {
+                body += '👀 Please review the changes before merging.';
+              }
+            } else {
+              body = `@${{ steps.context.outputs.author }} I analyzed your request but no code changes were needed. This might mean:\n- The requested functionality already exists\n- The issue needs more clarification\n- Manual intervention is required`;
+            }
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+      
+      # Step 11: Auto-merge if requested
+      - name: Enable auto-merge
+        if: |
+          steps.apply.outputs.has_changes == 'true' && 
+          steps.extract.outputs.auto_merge == 'true'
+        run: |
+          echo "Enabling auto-merge for PR #${{ steps.pr_details.outputs.number }}"
+          
+          # Try to enable auto-merge (will merge when checks pass)
+          gh pr merge ${{ steps.pr_details.outputs.number }} --auto --squash --delete-branch || true
+          
+          # If no branch protection, merge immediately
+          sleep 10
+          if gh pr view ${{ steps.pr_details.outputs.number }} --json state -q '.state' | grep -q "OPEN"; then
+            echo "PR still open, attempting direct merge..."
+            gh pr merge ${{ steps.pr_details.outputs.number }} --squash --delete-branch || echo "Could not merge - manual review required"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
