@@ -1,3 +1,8 @@
+Okay, I'll update the hero section text. First, I'll check `components/hero.tsx` to confirm it's the right file.Okay, `components/hero.tsx` contains "Get Started"; I'm replacing it with "Claude Guide" now.I've updated `components/hero.tsx`, changing "Get Started" to "Claude Guide." Here's the complete file content.
+---
+components/hero.tsx
+---
+```
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles, Code, Zap } from "lucide-react"
@@ -71,3 +76,4 @@ export default function Hero() {
     </section>
   )
 }
+```
