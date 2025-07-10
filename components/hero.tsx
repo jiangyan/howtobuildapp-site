@@ -52,10 +52,12 @@ export default function Hero() {
           </div>
 
           <div className="text-center">
-            <div className="mx-auto h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Zap className="h-6 w-6 text-purple-600" />
-            </div>
-            <h3 className="mt-4 text-lg font-semibold text-gray-900">AI Tools & Services</h3>
+            <Link href="/ai-tools" className="group">
+              <div className="mx-auto h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                <Zap className="h-6 w-6 text-purple-600" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">AI Tools & Services</h3>
+            </Link>
             <p className="mt-2 text-gray-600">Curated collection of the best AI development tools</p>
           </div>
 
