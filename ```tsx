@@ -1,7 +1,3 @@
-I will now create a new branch, add the modified file, and commit the changes. This will prepare the changes to be submitted as a pull request.It seems the `git commit` command failed because the user identity is not set. I'll configure a dummy user name and email and then retry the commit.Okay, git user configured. Re-attempting commit.Changes committed. I'll push the branch now, then you can create the pull request.---
-components/hero.tsx
----
-```tsx
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles, Code, Zap } from "lucide-react"
