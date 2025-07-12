@@ -10,6 +10,68 @@
 This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
 Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
 
+## Installation
+
+To set up this project locally, follow these steps:
+
+### Prerequisites
+
+- Node.js (version 18 or higher)
+- npm (comes with Node.js)
+
+### Install Dependencies
+
+```bash
+npm install --legacy-peer-deps
+```
+
+Note: We use `--legacy-peer-deps` to resolve dependency conflicts with some React components.
+
+### Development
+
+To start the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Build
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+### Start Production Server
+
+To start the production server:
+
+```bash
+npm start
+```
+
+### Linting
+
+To run the linter:
+
+```bash
+npm run lint
+```
+
+## Technologies Used
+
+This project is built with:
+
+- **Next.js 15** - React framework for production
+- **React 19** - UI library
+- **TypeScript** - Type-safe JavaScript
+- **Tailwind CSS** - Utility-first CSS framework
+- **Radix UI** - Accessible component primitives
+- **Lucide React** - Icon library
+
 ## Deployment
 
 Your project is live at:
