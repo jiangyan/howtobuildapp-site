@@ -62,7 +62,7 @@ export default function Hero() {
           </div>
 
           <div className="text-center">
-            <Link href="/blog" className="group">
+            <Link href="/blog/startup-ai-conversion-case-study" className="group">
               <div className="mx-auto h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
                 <Sparkles className="h-6 w-6 text-green-600" />
               </div>
