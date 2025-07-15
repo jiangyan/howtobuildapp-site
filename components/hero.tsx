@@ -62,10 +62,12 @@ export default function Hero() {
           </div>
 
           <div className="text-center">
-            <div className="mx-auto h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <Sparkles className="h-6 w-6 text-green-600" />
-            </div>
-            <h3 className="mt-4 text-lg font-semibold text-gray-900">Case Studies</h3>
+            <Link href="/blog" className="group">
+              <div className="mx-auto h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                <Sparkles className="h-6 w-6 text-green-600" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors">Case Studies</h3>
+            </Link>
             <p className="mt-2 text-gray-600">Real-world examples of successful AI implementations</p>
           </div>
         </div>
