@@ -1,5 +1,8 @@
+"use client"
+
 import type { Metadata } from "next"
 import Link from "next/link"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -139,6 +142,19 @@ const categories = [
 ]
 
 export default function AIToolsPage() {
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("All")
+
+  const filteredTools = aiTools.filter((tool) => {
+    const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         tool.features.some(feature => feature.toLowerCase().includes(searchTerm.toLowerCase()))
+    
+    const matchesCategory = selectedCategory === "All" || tool.category === selectedCategory
+    
+    return matchesSearch && matchesCategory
+  })
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -156,14 +172,25 @@ export default function AIToolsPage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input type="text" placeholder="Search AI tools..." className="pl-10 bg-white" />
+                <Input 
+                  type="text" 
+                  placeholder="Search AI tools..." 
+                  className="pl-10 bg-white"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
               <div className="flex gap-2 flex-wrap">
                 {categories.map((category) => (
                   <Badge
                     key={category}
-                    variant="outline"
-                    className="cursor-pointer hover:bg-blue-50 hover:border-blue-300"
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    className={`cursor-pointer transition-colors ${
+                      selectedCategory === category 
+                        ? "bg-blue-600 text-white hover:bg-blue-700" 
+                        : "hover:bg-blue-50 hover:border-blue-300"
+                    }`}
+                    onClick={() => setSelectedCategory(category)}
                   >
                     {category}
                   </Badge>
@@ -177,8 +204,14 @@ export default function AIToolsPage() {
       {/* Tools Grid */}
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {aiTools.map((tool) => {
+          {filteredTools.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No AI tools found matching your search criteria.</p>
+              <p className="text-gray-400 mt-2">Try adjusting your search terms or selecting a different category.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredTools.map((tool) => {
               const IconComponent = tool.icon
               return (
                 <Card key={tool.id} className="hover:shadow-lg transition-shadow duration-300">
@@ -226,7 +259,8 @@ export default function AIToolsPage() {
                 </Card>
               )
             })}
-          </div>
+            </div>
+          )}
         </div>
       </section>
     </div>
