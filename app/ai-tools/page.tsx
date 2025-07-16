@@ -1,6 +1,5 @@
 "use client"
 
-import type { Metadata } from "next"
 import Link from "next/link"
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,12 +19,6 @@ import {
   Mic,
   Video,
 } from "lucide-react"
-
-export const metadata: Metadata = {
-  title: "AI Tools & Services - Curated Collection for Developers",
-  description:
-    "Discover the best AI tools and services to accelerate your development workflow. From language models to image generation.",
-}
 
 const aiTools = [
   {
