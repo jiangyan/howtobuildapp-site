@@ -1787,1339 +1787,712 @@ The future of AI image generation is bright, and by mastering these concepts tod
       slug: "understanding-large-language-models",
       content: {
         introduction: `
-Large Language Models (LLMs) have revolutionized how we interact with artificial intelligence, enabling applications that can understand, generate, and manipulate human language with unprecedented sophistication. From chatbots and content generation to code assistance and data analysis, LLMs are becoming the backbone of modern AI-powered applications.
+Large Language Models (LLMs) have revolutionized the way we interact with artificial intelligence. From ChatGPT to GPT-4, these powerful models are transforming industries and enabling developers to create intelligent applications that understand and generate human-like text. However, for many developers, LLMs can seem like a black box - complex, mysterious, and difficult to integrate effectively.
 
-As a developer, understanding how LLMs work, their capabilities, and their limitations is crucial for building effective AI-powered solutions. This comprehensive guide will take you through the fundamentals of LLMs, practical implementation strategies, and best practices for integrating these powerful models into your applications.
+This comprehensive guide will demystify Large Language Models and provide you with practical knowledge to integrate them into your applications. We'll explore how LLMs work, their capabilities and limitations, best practices for implementation, and real-world examples that you can apply immediately.
 
-Whether you're building your first AI feature or looking to optimize existing implementations, this guide provides the knowledge and practical examples you need to harness the full potential of large language models in your development projects.
+Whether you're building a chatbot, content generation tool, or any AI-powered application, understanding LLMs is crucial for creating effective and responsible AI solutions. Let's dive deep into the world of Large Language Models and unlock their potential for your projects.
         `,
         sections: [
           {
             title: "What Are Large Language Models?",
             content: `
-Large Language Models are AI systems trained on vast amounts of text data to understand and generate human-like text. They use deep learning architectures, primarily transformers, to process and generate language with remarkable fluency and coherence.
+Large Language Models are neural networks trained on vast amounts of text data to understand and generate human-like text. They represent a breakthrough in natural language processing, capable of performing a wide range of tasks without task-specific training.
 
-**Key Characteristics of LLMs:**
-
+**Core Characteristics:**
 - **Scale**: Trained on billions or trillions of parameters
-- **Versatility**: Can perform multiple language tasks without task-specific training
-- **Context Understanding**: Maintain coherence across long conversations
+- **Generalization**: Can perform multiple tasks without specific training
+- **Context Understanding**: Maintain context across long conversations
 - **Emergent Abilities**: Develop capabilities not explicitly programmed
-
-**Popular LLM Providers:**
-
-\`\`\`javascript
-// Major LLM providers and their flagship models
-const llmProviders = {
-  openai: {
-    models: ['gpt-4', 'gpt-3.5-turbo', 'gpt-4-turbo'],
-    strengths: ['Reasoning', 'Code generation', 'Instruction following'],
-    pricing: 'Token-based, moderate cost'
-  },
-  anthropic: {
-    models: ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
-    strengths: ['Safety', 'Long context', 'Analysis'],
-    pricing: 'Token-based, competitive'
-  },
-  google: {
-    models: ['gemini-pro', 'palm-2'],
-    strengths: ['Multimodal', 'Integration', 'Search'],
-    pricing: 'Free tier available'
-  },
-  meta: {
-    models: ['llama-2', 'code-llama'],
-    strengths: ['Open source', 'Customization', 'Self-hosting'],
-    pricing: 'Free for research/commercial use'
-  }
-};
-\`\`\`
+- **Few-shot Learning**: Learn new tasks from just a few examples
 
 **How LLMs Work:**
+LLMs use transformer architecture, which processes text by paying attention to different parts of the input simultaneously. This allows them to understand context, relationships, and patterns in language more effectively than previous approaches.
 
-1. **Training Phase**: Models learn patterns from massive text datasets
-2. **Tokenization**: Text is broken into tokens (words, subwords, characters)
-3. **Attention Mechanism**: Models focus on relevant parts of input
-4. **Generation**: Probabilistic next-token prediction creates responses
-            `
-          },
-          {
-            title: "Setting Up Your Development Environment",
-            content: `
-Before diving into LLM integration, let's set up a robust development environment that supports multiple providers and best practices.
+**Popular LLMs:**
+- **GPT-4**: OpenAI's most advanced model with strong reasoning capabilities
+- **Claude**: Anthropic's constitutional AI focused on safety and helpfulness
+- **LLaMA**: Meta's open-source models for research and development
+- **Gemini**: Google's multimodal AI with text, image, and code capabilities
+- **PaLM**: Google's Pathways Language Model for complex reasoning tasks
 
-**Project Setup:**
+**Key Capabilities:**
+- Text generation and completion
+- Language translation
+- Code generation and debugging
+- Question answering and reasoning
+- Summarization and analysis
+- Creative writing and storytelling
+- Mathematical problem solving
+- Conversational AI and dialogue
 
-\`\`\`bash
-# Create a new Next.js project
-npx create-next-app@latest llm-integration-demo
-cd llm-integration-demo
-
-# Install essential dependencies
-npm install openai @anthropic-ai/sdk @google/generative-ai
-npm install @types/node dotenv zod
-
-# Install development dependencies
-npm install -D @types/react @types/react-dom typescript
-\`\`\`
-
-**Environment Configuration:**
-
-\`\`\`typescript
-// lib/config.ts
-export const config = {
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY!,
-    model: 'gpt-4-turbo-preview',
-    maxTokens: 1000,
-    temperature: 0.7
-  },
-  anthropic: {
-    apiKey: process.env.ANTHROPIC_API_KEY!,
-    model: 'claude-3-sonnet-20240229',
-    maxTokens: 1000
-  },
-  google: {
-    apiKey: process.env.GOOGLE_API_KEY!,
-    model: 'gemini-pro'
-  }
-};
-\`\`\`
-
-**Type Definitions:**
-
-\`\`\`typescript
-// types/llm.ts
-export interface LLMMessage {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-  timestamp?: Date;
-}
-
-export interface LLMResponse {
-  content: string;
-  usage?: {
-    promptTokens: number;
-    completionTokens: number;
-    totalTokens: number;
-  };
+**Understanding Model Parameters:**
+The "large" in Large Language Models refers to the number of parameters - the weights and connections in the neural network. More parameters generally mean better performance but also higher computational costs and complexity.
+            `,
+            codeExample: `
+// Basic LLM interaction example
+interface LLMRequest {
   model: string;
-  provider: string;
+  prompt: string;
+  maxTokens: number;
+  temperature: number;
+  topP?: number;
+  frequencyPenalty?: number;
+  presencePenalty?: number;
 }
 
-export interface LLMConfig {
-  provider: 'openai' | 'anthropic' | 'google';
+interface LLMResponse {
+  text: string;
+  tokens: number;
   model: string;
-  temperature?: number;
-  maxTokens?: number;
-  systemPrompt?: string;
+  finishReason: 'stop' | 'length' | 'content_filter';
 }
-\`\`\`
-            `
-          },
-          {
-            title: "Building Your First LLM Integration",
-            content: `
-Let's create a flexible LLM client that can work with multiple providers and handle common use cases.
 
-**Universal LLM Client:**
+// Example LLM service wrapper
+class LLMService {
+  private apiKey: string;
+  private baseUrl: string;
 
-\`\`\`typescript
-// lib/llm-client.ts
-import OpenAI from 'openai';
-import Anthropic from '@anthropic-ai/sdk';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { LLMMessage, LLMResponse, LLMConfig } from '@/types/llm';
-
-export class LLMClient {
-  private openai: OpenAI;
-  private anthropic: Anthropic;
-  private google: GoogleGenerativeAI;
-
-  constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    });
-    
-    this.anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY
-    });
-    
-    this.google = new GoogleGenerativeAI(
-      process.env.GOOGLE_API_KEY!
-    );
+  constructor(apiKey: string, baseUrl: string = 'https://api.openai.com/v1') {
+    this.apiKey = apiKey;
+    this.baseUrl = baseUrl;
   }
 
-  async generateResponse(
-    messages: LLMMessage[],
-    config: LLMConfig
-  ): Promise<LLMResponse> {
-    switch (config.provider) {
-      case 'openai':
-        return this.generateOpenAI(messages, config);
-      case 'anthropic':
-        return this.generateAnthropic(messages, config);
-      case 'google':
-        return this.generateGoogle(messages, config);
-      default:
-        throw new Error(\`Unsupported provider: \${config.provider}\`);
-    }
-  }
-
-  private async generateOpenAI(
-    messages: LLMMessage[],
-    config: LLMConfig
-  ): Promise<LLMResponse> {
-    const response = await this.openai.chat.completions.create({
-      model: config.model,
-      messages: messages.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      })),
-      temperature: config.temperature,
-      max_tokens: config.maxTokens
-    });
-
-    return {
-      content: response.choices[0].message.content || '',
-      usage: {
-        promptTokens: response.usage?.prompt_tokens || 0,
-        completionTokens: response.usage?.completion_tokens || 0,
-        totalTokens: response.usage?.total_tokens || 0
+  async generateText(request: LLMRequest): Promise<LLMResponse> {
+    const response = await fetch(\`\${this.baseUrl}/completions\`, {
+      method: 'POST',
+      headers: {
+        'Authorization': \`Bearer \${this.apiKey}\`,
+        'Content-Type': 'application/json',
       },
-      model: config.model,
-      provider: 'openai'
-    };
-  }
-
-  private async generateAnthropic(
-    messages: LLMMessage[],
-    config: LLMConfig
-  ): Promise<LLMResponse> {
-    const systemMessage = messages.find(m => m.role === 'system');
-    const conversationMessages = messages.filter(m => m.role !== 'system');
-
-    const response = await this.anthropic.messages.create({
-      model: config.model,
-      max_tokens: config.maxTokens || 1000,
-      system: systemMessage?.content,
-      messages: conversationMessages.map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'assistant',
-        content: msg.content
-      }))
+      body: JSON.stringify({
+        model: request.model,
+        prompt: request.prompt,
+        max_tokens: request.maxTokens,
+        temperature: request.temperature,
+        top_p: request.topP,
+        frequency_penalty: request.frequencyPenalty,
+        presence_penalty: request.presencePenalty,
+      }),
     });
 
-    return {
-      content: response.content[0].type === 'text' 
-        ? response.content[0].text 
-        : '',
-      usage: {
-        promptTokens: response.usage.input_tokens,
-        completionTokens: response.usage.output_tokens,
-        totalTokens: response.usage.input_tokens + response.usage.output_tokens
-      },
-      model: config.model,
-      provider: 'anthropic'
-    };
-  }
-
-  private async generateGoogle(
-    messages: LLMMessage[],
-    config: LLMConfig
-  ): Promise<LLMResponse> {
-    const model = this.google.getGenerativeModel({ 
-      model: config.model 
-    });
-
-    const chat = model.startChat({
-      history: messages.slice(0, -1).map(msg => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
-      }))
-    });
-
-    const result = await chat.sendMessage(
-      messages[messages.length - 1].content
-    );
+    const data = await response.json();
     
     return {
-      content: result.response.text(),
-      model: config.model,
-      provider: 'google'
+      text: data.choices[0].text,
+      tokens: data.usage.total_tokens,
+      model: request.model,
+      finishReason: data.choices[0].finish_reason,
     };
   }
 }
-\`\`\`
 
-**API Route Implementation:**
+// Usage example
+const llm = new LLMService(process.env.OPENAI_API_KEY!);
 
-\`\`\`typescript
-// app/api/chat/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { LLMClient } from '@/lib/llm-client';
-import { LLMMessage, LLMConfig } from '@/types/llm';
-
-const llmClient = new LLMClient();
-
-export async function POST(request: NextRequest) {
-  try {
-    const { messages, config }: { 
-      messages: LLMMessage[], 
-      config: LLMConfig 
-    } = await request.json();
-
-    const response = await llmClient.generateResponse(messages, config);
-    
-    return NextResponse.json(response);
-  } catch (error) {
-    console.error('LLM API Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate response' },
-      { status: 500 }
-    );
-  }
-}
-\`\`\`
-            `
-          },
-          {
-            title: "Advanced LLM Techniques",
-            content: `
-Once you have basic LLM integration working, you can implement advanced techniques to improve performance and capabilities.
-
-**Prompt Engineering:**
-
-\`\`\`typescript
-// lib/prompt-templates.ts
-export const promptTemplates = {
-  codeReview: \`
-You are an expert code reviewer. Analyze the following code and provide:
-1. Potential bugs or issues
-2. Performance improvements
-3. Best practice recommendations
-4. Security considerations
-
-Code to review:
-{code}
-
-Provide your feedback in a structured format with specific examples.
-\`,
-
-  dataAnalysis: \`
-You are a data analyst. Given the following dataset:
-{data}
-
-Please:
-1. Identify key patterns and trends
-2. Suggest relevant visualizations
-3. Highlight any anomalies
-4. Recommend next steps for analysis
-
-Format your response with clear sections and actionable insights.
-\`,
-
-  contentGeneration: \`
-Create engaging content for: {topic}
-Target audience: {audience}
-Tone: {tone}
-Length: {length}
-
-Requirements:
-- Include relevant examples
-- Use clear, concise language
-- Add a compelling call-to-action
-- Optimize for readability
-\`
-};
-
-export function buildPrompt(
-  template: string, 
-  variables: Record<string, string>
-): string {
-  return Object.entries(variables).reduce(
-    (prompt, [key, value]) => prompt.replace(\`{\${key}}\`, value),
-    template
-  );
-}
-\`\`\`
-
-**Function Calling:**
-
-\`\`\`typescript
-// lib/function-calling.ts
-interface FunctionDefinition {
-  name: string;
-  description: string;
-  parameters: {
-    type: string;
-    properties: Record<string, any>;
-    required: string[];
-  };
-}
-
-export const functions: FunctionDefinition[] = [
-  {
-    name: 'get_weather',
-    description: 'Get current weather information for a location',
-    parameters: {
-      type: 'object',
-      properties: {
-        location: {
-          type: 'string',
-          description: 'The city and state, e.g. San Francisco, CA'
-        },
-        unit: {
-          type: 'string',
-          enum: ['celsius', 'fahrenheit'],
-          description: 'Temperature unit'
-        }
-      },
-      required: ['location']
-    }
-  },
-  {
-    name: 'calculate_math',
-    description: 'Perform mathematical calculations',
-    parameters: {
-      type: 'object',
-      properties: {
-        expression: {
-          type: 'string',
-          description: 'Mathematical expression to evaluate'
-        }
-      },
-      required: ['expression']
-    }
-  }
-];
-
-export async function handleFunctionCall(
-  functionName: string,
-  args: any
-): Promise<string> {
-  switch (functionName) {
-    case 'get_weather':
-      return await getWeather(args.location, args.unit);
-    case 'calculate_math':
-      return calculateMath(args.expression);
-    default:
-      throw new Error(\`Unknown function: \${functionName}\`);
-  }
-}
-
-async function getWeather(location: string, unit = 'celsius'): Promise<string> {
-  // Mock weather API call
-  return \`Current weather in \${location}: 22°\${unit === 'celsius' ? 'C' : 'F'}, partly cloudy\`;
-}
-
-function calculateMath(expression: string): string {
-  try {
-    // Simple math evaluation (use a proper library in production)
-    const result = eval(expression);
-    return \`Result: \${result}\`;
-  } catch (error) {
-    return 'Error: Invalid mathematical expression';
-  }
-}
-\`\`\`
-
-**Streaming Responses:**
-
-\`\`\`typescript
-// lib/streaming.ts
-export async function streamLLMResponse(
-  messages: LLMMessage[],
-  config: LLMConfig,
-  onChunk: (chunk: string) => void
-): Promise<void> {
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-  });
-
-  const stream = await openai.chat.completions.create({
-    model: config.model,
-    messages: messages.map(msg => ({
-      role: msg.role,
-      content: msg.content
-    })),
-    stream: true,
-    temperature: config.temperature,
-    max_tokens: config.maxTokens
-  });
-
-  for await (const chunk of stream) {
-    const content = chunk.choices[0]?.delta?.content || '';
-    if (content) {
-      onChunk(content);
-    }
-  }
-}
-\`\`\`
-            `
-          },
-          {
-            title: "Performance Optimization and Best Practices",
-            content: `
-Building production-ready LLM applications requires careful attention to performance, cost, and user experience.
-
-**Caching Strategies:**
-
-\`\`\`typescript
-// lib/cache.ts
-import { createHash } from 'crypto';
-
-interface CacheEntry {
-  response: string;
-  timestamp: Date;
-  usage: {
-    promptTokens: number;
-    completionTokens: number;
-  };
-}
-
-class LLMCache {
-  private cache = new Map<string, CacheEntry>();
-  private maxAge = 1000 * 60 * 60; // 1 hour
-
-  private generateKey(messages: LLMMessage[], config: LLMConfig): string {
-    const content = JSON.stringify({ messages, config });
-    return createHash('sha256').update(content).digest('hex');
-  }
-
-  get(messages: LLMMessage[], config: LLMConfig): string | null {
-    const key = this.generateKey(messages, config);
-    const entry = this.cache.get(key);
-    
-    if (!entry) return null;
-    
-    const isExpired = Date.now() - entry.timestamp.getTime() > this.maxAge;
-    if (isExpired) {
-      this.cache.delete(key);
-      return null;
-    }
-    
-    return entry.response;
-  }
-
-  set(
-    messages: LLMMessage[], 
-    config: LLMConfig, 
-    response: string,
-    usage: { promptTokens: number; completionTokens: number }
-  ): void {
-    const key = this.generateKey(messages, config);
-    this.cache.set(key, {
-      response,
-      timestamp: new Date(),
-      usage
-    });
-  }
-
-  clear(): void {
-    this.cache.clear();
-  }
-
-  getStats(): { size: number; totalTokens: number } {
-    let totalTokens = 0;
-    for (const entry of this.cache.values()) {
-      totalTokens += entry.usage.promptTokens + entry.usage.completionTokens;
-    }
-    return { size: this.cache.size, totalTokens };
-  }
-}
-
-export const llmCache = new LLMCache();
-\`\`\`
-
-**Rate Limiting:**
-
-\`\`\`typescript
-// lib/rate-limiter.ts
-interface RateLimitConfig {
-  maxRequests: number;
-  windowMs: number;
-}
-
-class RateLimiter {
-  private requests = new Map<string, number[]>();
-
-  async checkLimit(
-    identifier: string, 
-    config: RateLimitConfig
-  ): Promise<boolean> {
-    const now = Date.now();
-    const windowStart = now - config.windowMs;
-    
-    // Get existing requests for this identifier
-    const userRequests = this.requests.get(identifier) || [];
-    
-    // Filter out old requests
-    const recentRequests = userRequests.filter(time => time > windowStart);
-    
-    // Check if under limit
-    if (recentRequests.length >= config.maxRequests) {
-      return false;
-    }
-    
-    // Add current request
-    recentRequests.push(now);
-    this.requests.set(identifier, recentRequests);
-    
-    return true;
-  }
-
-  getRemainingRequests(
-    identifier: string, 
-    config: RateLimitConfig
-  ): number {
-    const now = Date.now();
-    const windowStart = now - config.windowMs;
-    const userRequests = this.requests.get(identifier) || [];
-    const recentRequests = userRequests.filter(time => time > windowStart);
-    
-    return Math.max(0, config.maxRequests - recentRequests.length);
-  }
-}
-
-export const rateLimiter = new RateLimiter();
-\`\`\`
-
-**Error Handling and Retry Logic:**
-
-\`\`\`typescript
-// lib/error-handling.ts
-export class LLMError extends Error {
-  constructor(
-    message: string,
-    public provider: string,
-    public statusCode?: number,
-    public retryable: boolean = false
-  ) {
-    super(message);
-    this.name = 'LLMError';
-  }
-}
-
-export async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries: number = 3,
-  delayMs: number = 1000
-): Promise<T> {
-  let lastError: Error;
-  
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error) {
-      lastError = error as Error;
-      
-      // Don't retry on non-retryable errors
-      if (error instanceof LLMError && !error.retryable) {
-        throw error;
-      }
-      
-      // Don't retry on last attempt
-      if (attempt === maxRetries) {
-        throw error;
-      }
-      
-      // Exponential backoff
-      await new Promise(resolve => 
-        setTimeout(resolve, delayMs * Math.pow(2, attempt))
-      );
-    }
-  }
-  
-  throw lastError!;
-}
-
-export function handleLLMError(error: any, provider: string): LLMError {
-  if (error.status === 429) {
-    return new LLMError(
-      'Rate limit exceeded',
-      provider,
-      429,
-      true
-    );
-  }
-  
-  if (error.status >= 500) {
-    return new LLMError(
-      'Server error',
-      provider,
-      error.status,
-      true
-    );
-  }
-  
-  return new LLMError(
-    error.message || 'Unknown error',
-    provider,
-    error.status,
-    false
-  );
-}
-\`\`\`
-
-**Cost Monitoring:**
-
-\`\`\`typescript
-// lib/cost-tracking.ts
-interface CostConfig {
-  [model: string]: {
-    inputCostPer1k: number;
-    outputCostPer1k: number;
-  };
-}
-
-const costConfig: CostConfig = {
-  'gpt-4-turbo-preview': {
-    inputCostPer1k: 0.01,
-    outputCostPer1k: 0.03
-  },
-  'gpt-3.5-turbo': {
-    inputCostPer1k: 0.0015,
-    outputCostPer1k: 0.002
-  },
-  'claude-3-opus-20240229': {
-    inputCostPer1k: 0.015,
-    outputCostPer1k: 0.075
-  }
-};
-
-export function calculateCost(
-  model: string,
-  promptTokens: number,
-  completionTokens: number
-): number {
-  const config = costConfig[model];
-  if (!config) return 0;
-  
-  const inputCost = (promptTokens / 1000) * config.inputCostPer1k;
-  const outputCost = (completionTokens / 1000) * config.outputCostPer1k;
-  
-  return inputCost + outputCost;
-}
-
-export class CostTracker {
-  private totalCost = 0;
-  private requestCount = 0;
-  
-  trackRequest(
-    model: string,
-    promptTokens: number,
-    completionTokens: number
-  ): number {
-    const cost = calculateCost(model, promptTokens, completionTokens);
-    this.totalCost += cost;
-    this.requestCount++;
-    return cost;
-  }
-  
-  getStats(): { totalCost: number; requestCount: number; avgCost: number } {
-    return {
-      totalCost: this.totalCost,
-      requestCount: this.requestCount,
-      avgCost: this.requestCount > 0 ? this.totalCost / this.requestCount : 0
-    };
-  }
-  
-  reset(): void {
-    this.totalCost = 0;
-    this.requestCount = 0;
-  }
-}
-\`\`\`
-            `
-          },
-          {
-            title: "Real-World Applications and Use Cases",
-            content: `
-Let's explore practical applications of LLMs in different domains with complete implementation examples.
-
-**Content Management System:**
-
-\`\`\`typescript
-// lib/content-generator.ts
-interface ContentRequest {
-  type: 'blog' | 'social' | 'email' | 'product';
-  topic: string;
-  audience: string;
-  tone: 'professional' | 'casual' | 'friendly' | 'formal';
-  length: 'short' | 'medium' | 'long';
-  keywords?: string[];
-  style?: string;
-}
-
-export class ContentGenerator {
-  private llmClient: LLMClient;
-  
-  constructor(llmClient: LLMClient) {
-    this.llmClient = llmClient;
-  }
-  
-  async generateContent(request: ContentRequest): Promise<string> {
-    const prompt = this.buildContentPrompt(request);
-    
-    const response = await this.llmClient.generateResponse(
-      [
-        { role: 'system', content: 'You are an expert content creator.' },
-        { role: 'user', content: prompt }
-      ],
-      {
-        provider: 'openai',
-        model: 'gpt-4-turbo-preview',
-        temperature: 0.7,
-        maxTokens: this.getMaxTokens(request.length)
-      }
-    );
-    
-    return response.content;
-  }
-  
-  private buildContentPrompt(request: ContentRequest): string {
-    const lengthMap = {
-      short: '200-300 words',
-      medium: '500-700 words',
-      long: '1000-1500 words'
-    };
-    
-    let prompt = \`Create a \${request.type} post about "\${request.topic}" for \${request.audience}.\`;
-    prompt += \`\\nTone: \${request.tone}\`;
-    prompt += \`\\nLength: \${lengthMap[request.length]}\`;
-    
-    if (request.keywords?.length) {
-      prompt += \`\\nInclude these keywords naturally: \${request.keywords.join(', ')}\`;
-    }
-    
-    if (request.style) {
-      prompt += \`\\nStyle: \${request.style}\`;
-    }
-    
-    prompt += \`\\n\\nRequirements:
-- Engaging headline
-- Clear structure with subheadings
-- Compelling call-to-action
-- SEO-optimized content
-- Original and creative approach\`;
-    
-    return prompt;
-  }
-  
-  private getMaxTokens(length: string): number {
-    const tokenMap = { short: 500, medium: 1000, long: 2000 };
-    return tokenMap[length as keyof typeof tokenMap] || 1000;
-  }
-}
-\`\`\`
-
-**Code Assistant:**
-
-\`\`\`typescript
-// lib/code-assistant.ts
-interface CodeRequest {
-  action: 'explain' | 'review' | 'optimize' | 'debug' | 'test';
-  code: string;
-  language: string;
-  context?: string;
-}
-
-export class CodeAssistant {
-  private llmClient: LLMClient;
-  
-  constructor(llmClient: LLMClient) {
-    this.llmClient = llmClient;
-  }
-  
-  async processCode(request: CodeRequest): Promise<string> {
-    const systemPrompt = this.getSystemPrompt(request.action);
-    const userPrompt = this.buildUserPrompt(request);
-    
-    const response = await this.llmClient.generateResponse(
-      [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ],
-      {
-        provider: 'openai',
-        model: 'gpt-4-turbo-preview',
-        temperature: 0.3, // Lower temperature for code tasks
-        maxTokens: 2000
-      }
-    );
-    
-    return response.content;
-  }
-  
-  private getSystemPrompt(action: string): string {
-    const prompts = {
-      explain: 'You are an expert programmer who explains code clearly and concisely.',
-      review: 'You are a senior code reviewer. Provide constructive feedback on code quality, performance, and best practices.',
-      optimize: 'You are a performance optimization expert. Suggest improvements for better efficiency and maintainability.',
-      debug: 'You are a debugging expert. Help identify and fix issues in code.',
-      test: 'You are a testing expert. Generate comprehensive test cases for the given code.'
-    };
-    
-    return prompts[action as keyof typeof prompts] || prompts.explain;
-  }
-  
-  private buildUserPrompt(request: CodeRequest): string {
-    let prompt = \`Language: \${request.language}\\n\\n\`;
-    
-    if (request.context) {
-      prompt += \`Context: \${request.context}\\n\\n\`;
-    }
-    
-    prompt += \`Code:\\n\\\`\\\`\\\`\${request.language}\\n\${request.code}\\n\\\`\\\`\\\`\\n\\n\`;
-    
-    const actionInstructions = {
-      explain: 'Explain what this code does, how it works, and any important concepts.',
-      review: 'Review this code for potential issues, improvements, and best practices.',
-      optimize: 'Suggest optimizations for better performance and maintainability.',
-      debug: 'Help identify and fix any bugs or issues in this code.',
-      test: 'Generate comprehensive test cases for this code.'
-    };
-    
-    prompt += actionInstructions[request.action as keyof typeof actionInstructions];
-    
-    return prompt;
-  }
-}
-\`\`\`
-
-**Customer Support Bot:**
-
-\`\`\`typescript
-// lib/support-bot.ts
-interface SupportContext {
-  userId: string;
-  conversationHistory: LLMMessage[];
-  userProfile?: {
-    name: string;
-    tier: 'free' | 'premium' | 'enterprise';
-    previousIssues: string[];
-  };
-  knowledgeBase: {
-    faqs: Array<{ question: string; answer: string; category: string }>;
-    documentation: string[];
-  };
-}
-
-export class SupportBot {
-  private llmClient: LLMClient;
-  
-  constructor(llmClient: LLMClient) {
-    this.llmClient = llmClient;
-  }
-  
-  async handleSupportQuery(
-    query: string,
-    context: SupportContext
-  ): Promise<string> {
-    const systemPrompt = this.buildSystemPrompt(context);
-    const relevantInfo = await this.findRelevantInfo(query, context);
-    
-    const messages: LLMMessage[] = [
-      { role: 'system', content: systemPrompt },
-      ...context.conversationHistory,
-      { 
-        role: 'user', 
-        content: \`\${query}\\n\\nRelevant information:\\n\${relevantInfo}\`
-      }
-    ];
-    
-    const response = await this.llmClient.generateResponse(messages, {
-      provider: 'anthropic',
-      model: 'claude-3-sonnet-20240229',
-      temperature: 0.3,
-      maxTokens: 1000
-    });
-    
-    return response.content;
-  }
-  
-  private buildSystemPrompt(context: SupportContext): string {
-    let prompt = \`You are a helpful customer support agent. Be friendly, professional, and solution-focused.\`;
-    
-    if (context.userProfile) {
-      prompt += \`\\n\\nCustomer: \${context.userProfile.name} (\${context.userProfile.tier} tier)\`;
-      
-      if (context.userProfile.previousIssues.length > 0) {
-        prompt += \`\\nPrevious issues: \${context.userProfile.previousIssues.join(', ')}\`;
-      }
-    }
-    
-    prompt += \`\\n\\nGuidelines:
-- Always be empathetic and understanding
-- Provide clear, step-by-step solutions
-- Ask clarifying questions when needed
-- Escalate complex issues to human agents
-- Reference relevant documentation when helpful
-- Keep responses concise but comprehensive\`;
-    
-    return prompt;
-  }
-  
-  private async findRelevantInfo(
-    query: string,
-    context: SupportContext
-  ): Promise<string> {
-    // Simple keyword matching for FAQs
-    const relevantFAQs = context.knowledgeBase.faqs.filter(faq =>
-      faq.question.toLowerCase().includes(query.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(query.toLowerCase())
-    );
-    
-    let info = '';
-    
-    if (relevantFAQs.length > 0) {
-      info += 'Relevant FAQs:\\n';
-      relevantFAQs.forEach(faq => {
-        info += \`Q: \${faq.question}\\nA: \${faq.answer}\\n\\n\`;
-      });
-    }
-    
-    return info;
-  }
-}
-\`\`\`
-            `
-          },
-          {
-            title: "Security and Ethical Considerations",
-            content: `
-When working with LLMs, security and ethics are paramount. Here's how to build responsible AI applications.
-
-**Input Validation and Sanitization:**
-
-\`\`\`typescript
-// lib/security.ts
-import { z } from 'zod';
-
-const MessageSchema = z.object({
-  role: z.enum(['system', 'user', 'assistant']),
-  content: z.string().min(1).max(10000),
-  timestamp: z.date().optional()
+const response = await llm.generateText({
+  model: 'gpt-3.5-turbo',
+  prompt: 'Explain quantum computing in simple terms:',
+  maxTokens: 200,
+  temperature: 0.7,
 });
 
-const ConfigSchema = z.object({
-  provider: z.enum(['openai', 'anthropic', 'google']),
-  model: z.string(),
-  temperature: z.number().min(0).max(2).optional(),
-  maxTokens: z.number().min(1).max(4000).optional(),
-  systemPrompt: z.string().max(5000).optional()
-});
+console.log(response.text);
+`
+          },
+          {
+            title: "Effective Prompt Engineering",
+            content: `
+Prompt engineering is the art and science of crafting inputs that guide LLMs to produce desired outputs. It's one of the most important skills for working with LLMs effectively.
 
-export function validateInput(data: any): {
-  messages: LLMMessage[];
-  config: LLMConfig;
-} {
-  const messages = z.array(MessageSchema).parse(data.messages);
-  const config = ConfigSchema.parse(data.config);
-  
-  return { messages, config };
-}
+**Fundamental Principles:**
+- **Be Specific**: Provide clear, detailed instructions
+- **Use Examples**: Show the model what you want with examples
+- **Set Context**: Provide relevant background information
+- **Define Format**: Specify the desired output format
+- **Iterate and Refine**: Test and improve your prompts
 
-// Content filtering
-export function filterContent(content: string): string {
-  // Remove potential prompt injection attempts
-  const dangerousPatterns = [
-    /ignore (previous|all) instructions/gi,
-    /system prompt/gi,
-    /you are now/gi,
-    /forget everything/gi,
-    /new instructions/gi
-  ];
-  
-  let filtered = content;
-  dangerousPatterns.forEach(pattern => {
-    filtered = filtered.replace(pattern, '[FILTERED]');
-  });
-  
-  return filtered;
-}
+**Prompt Structure Best Practices:**
+1. **System Message**: Define the AI's role and behavior
+2. **Context**: Provide relevant background information
+3. **Task Description**: Clearly state what you want
+4. **Examples**: Show desired input/output patterns
+5. **Constraints**: Specify limitations or requirements
+6. **Output Format**: Define how the response should be structured
 
-// Rate limiting by user
-export class UserRateLimiter {
-  private userLimits = new Map<string, {
-    requests: number;
-    resetTime: number;
-  }>();
-  
-  checkLimit(userId: string, maxRequests: number = 100): boolean {
-    const now = Date.now();
-    const hourMs = 60 * 60 * 1000;
-    
-    const userLimit = this.userLimits.get(userId);
-    
-    if (!userLimit || now > userLimit.resetTime) {
-      this.userLimits.set(userId, {
-        requests: 1,
-        resetTime: now + hourMs
-      });
-      return true;
-    }
-    
-    if (userLimit.requests >= maxRequests) {
-      return false;
-    }
-    
-    userLimit.requests++;
-    return true;
+**Common Prompt Patterns:**
+- **Few-shot Learning**: Provide examples of desired behavior
+- **Chain of Thought**: Ask the model to explain its reasoning
+- **Role Playing**: Have the model assume a specific persona
+- **Template Filling**: Use structured formats for consistent outputs
+- **Instruction Following**: Give step-by-step instructions
+
+**Advanced Techniques:**
+- **Prompt Chaining**: Break complex tasks into smaller steps
+- **Self-Reflection**: Ask the model to evaluate its own responses
+- **Constraint Satisfaction**: Use rules to guide behavior
+- **Dynamic Prompting**: Adjust prompts based on context
+- **Retrieval Augmented Generation**: Combine with external knowledge
+
+**Common Pitfalls to Avoid:**
+- Ambiguous instructions
+- Overly complex prompts
+- Inconsistent examples
+- Lack of constraints
+- Ignoring model limitations
+            `,
+            codeExample: `
+// Prompt engineering examples
+class PromptEngineer {
+  // System message template
+  static createSystemMessage(role: string, guidelines: string[]): string {
+    return \`You are a \${role}. Follow these guidelines:
+\${guidelines.map(g => \`- \${g}\`).join('\\n')}
+
+Always be helpful, accurate, and professional in your responses.\`;
   }
-}
-\`\`\`
 
-**Content Moderation:**
+  // Few-shot learning example
+  static createFewShotPrompt(task: string, examples: Array<{input: string, output: string}>): string {
+    const exampleText = examples.map(ex => 
+      \`Input: \${ex.input}\\nOutput: \${ex.output}\`
+    ).join('\\n\\n');
 
-\`\`\`typescript
-// lib/moderation.ts
-interface ModerationResult {
-  flagged: boolean;
-  categories: {
-    hate: boolean;
-    harassment: boolean;
-    selfHarm: boolean;
-    sexual: boolean;
-    violence: boolean;
-    spam: boolean;
-  };
-  confidence: number;
-}
+    return \`Task: \${task}
 
-export class ContentModerator {
-  private openai: OpenAI;
-  
-  constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    });
+Examples:
+\${exampleText}
+
+Now complete the following:
+Input: \`;
   }
-  
-  async moderateContent(content: string): Promise<ModerationResult> {
-    try {
-      const response = await this.openai.moderations.create({
-        input: content
-      });
-      
-      const result = response.results[0];
-      
-      return {
-        flagged: result.flagged,
-        categories: {
-          hate: result.categories.hate,
-          harassment: result.categories.harassment,
-          selfHarm: result.categories['self-harm'],
-          sexual: result.categories.sexual,
-          violence: result.categories.violence,
-          spam: false // Custom detection needed
-        },
-        confidence: Math.max(...Object.values(result.category_scores))
-      };
-    } catch (error) {
-      console.error('Moderation error:', error);
-      // Fail safe - flag for manual review
-      return {
-        flagged: true,
-        categories: {
-          hate: false,
-          harassment: false,
-          selfHarm: false,
-          sexual: false,
-          violence: false,
-          spam: false
-        },
-        confidence: 0
-      };
-    }
-  }
-  
-  async moderateConversation(messages: LLMMessage[]): Promise<boolean> {
-    for (const message of messages) {
-      if (message.role === 'user') {
-        const result = await this.moderateContent(message.content);
-        if (result.flagged) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-}
-\`\`\`
 
-**Privacy Protection:**
+  // Chain of thought prompting
+  static createChainOfThoughtPrompt(question: string): string {
+    return \`Question: \${question}
 
-\`\`\`typescript
-// lib/privacy.ts
-import { createHash } from 'crypto';
+Let's think step by step:
+1. First, I need to understand what is being asked
+2. Then, I'll identify the key information
+3. Next, I'll work through the logic
+4. Finally, I'll provide a clear answer
 
-export class PrivacyProtector {
-  private readonly piiPatterns = [
-    /\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b/g, // Email
-    /\\b\\d{3}-\\d{2}-\\d{4}\\b/g, // SSN
-    /\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b/g, // Credit card
-    /\\b\\d{3}-\\d{3}-\\d{4}\\b/g, // Phone number
-  ];
-  
-  sanitizeInput(content: string): string {
-    let sanitized = content;
-    
-    this.piiPatterns.forEach(pattern => {
-      sanitized = sanitized.replace(pattern, '[REDACTED]');
-    });
-    
-    return sanitized;
+Step 1:\`;
   }
-  
-  hashUserId(userId: string): string {
-    return createHash('sha256').update(userId).digest('hex');
-  }
-  
-  anonymizeConversation(messages: LLMMessage[]): LLMMessage[] {
-    return messages.map(message => ({
-      ...message,
-      content: this.sanitizeInput(message.content)
-    }));
+
+  // Structured output prompt
+  static createStructuredPrompt(task: string, outputSchema: object): string {
+    return \`Task: \${task}
+
+Please provide your response in the following JSON format:
+\${JSON.stringify(outputSchema, null, 2)}
+
+Response:\`;
   }
 }
 
-// Audit logging
-export class AuditLogger {
-  private logs: Array<{
-    timestamp: Date;
-    userId: string;
-    action: string;
-    model: string;
-    tokenUsage: number;
-    cost: number;
-  }> = [];
-  
-  logRequest(
-    userId: string,
-    model: string,
-    tokenUsage: number,
-    cost: number
-  ): void {
-    this.logs.push({
-      timestamp: new Date(),
-      userId,
-      action: 'llm_request',
-      model,
-      tokenUsage,
-      cost
-    });
-  }
-  
-  getLogs(userId?: string): typeof this.logs {
-    if (userId) {
-      return this.logs.filter(log => log.userId === userId);
-    }
-    return this.logs;
-  }
-  
-  exportLogs(): string {
-    return JSON.stringify(this.logs, null, 2);
-  }
-}
-\`\`\`
-
-**Ethical Guidelines Implementation:**
-
-\`\`\`typescript
-// lib/ethics.ts
-interface EthicalGuidelines {
-  maxTokensPerUser: number;
-  maxRequestsPerDay: number;
-  prohibitedTopics: string[];
-  requiredDisclosures: string[];
-}
-
-export class EthicsEnforcer {
-  private guidelines: EthicalGuidelines;
-  
-  constructor(guidelines: EthicalGuidelines) {
-    this.guidelines = guidelines;
-  }
-  
-  validateRequest(
-    userId: string,
-    content: string,
-    tokenCount: number
-  ): { allowed: boolean; reason?: string } {
-    // Check token limits
-    if (tokenCount > this.guidelines.maxTokensPerUser) {
-      return {
-        allowed: false,
-        reason: 'Token limit exceeded'
-      };
-    }
-    
-    // Check for prohibited topics
-    const lowerContent = content.toLowerCase();
-    for (const topic of this.guidelines.prohibitedTopics) {
-      if (lowerContent.includes(topic.toLowerCase())) {
-        return {
-          allowed: false,
-          reason: \`Content contains prohibited topic: \${topic}\`
-        };
-      }
-    }
-    
-    return { allowed: true };
-  }
-  
-  addDisclosures(response: string): string {
-    const disclosures = this.guidelines.requiredDisclosures.join('\\n');
-    return \`\${response}\\n\\n---\\n\${disclosures}\`;
-  }
-}
-
-// Default ethical guidelines
-export const defaultEthicalGuidelines: EthicalGuidelines = {
-  maxTokensPerUser: 10000,
-  maxRequestsPerDay: 100,
-  prohibitedTopics: [
-    'illegal activities',
-    'harmful content',
-    'personal attacks',
-    'discrimination'
-  ],
-  requiredDisclosures: [
-    'This response was generated by AI and may contain errors.',
-    'Please verify important information independently.',
-    'AI responses should not be considered professional advice.'
+// Usage examples
+const systemMessage = PromptEngineer.createSystemMessage(
+  'helpful programming assistant',
+  [
+    'Provide clear, concise code examples',
+    'Explain complex concepts in simple terms',
+    'Always include error handling',
+    'Suggest best practices and optimizations'
   ]
-};
-\`\`\`
-            `
+);
+
+const fewShotPrompt = PromptEngineer.createFewShotPrompt(
+  'Convert natural language to SQL queries',
+  [
+    {
+      input: 'Find all users who signed up last month',
+      output: 'SELECT * FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)'
+    },
+    {
+      input: 'Get the top 10 products by sales',
+      output: 'SELECT * FROM products ORDER BY sales DESC LIMIT 10'
+    }
+  ]
+);
+
+const structuredPrompt = PromptEngineer.createStructuredPrompt(
+  'Analyze the sentiment of customer feedback',
+  {
+    sentiment: 'positive | negative | neutral',
+    confidence: 'number between 0 and 1',
+    key_themes: ['array of main topics'],
+    suggested_action: 'string with recommendation'
+  }
+);
+`
+          },
+          {
+            title: "Integration Patterns and Best Practices",
+            content: `
+Successfully integrating LLMs into your applications requires understanding various patterns, architectures, and best practices. Here's how to build robust, scalable LLM-powered applications.
+
+**Architecture Patterns:**
+- **Direct API Integration**: Simple request/response pattern
+- **Streaming Responses**: Real-time text generation
+- **Batch Processing**: Handle multiple requests efficiently
+- **Caching Layer**: Reduce API calls and improve performance
+- **Fallback Systems**: Handle failures gracefully
+- **Rate Limiting**: Manage API usage and costs
+
+**Performance Optimization:**
+- **Response Caching**: Cache common queries and responses
+- **Request Batching**: Group multiple requests when possible
+- **Streaming**: Use streaming for better user experience
+- **Token Optimization**: Minimize token usage without losing quality
+- **Model Selection**: Choose the right model for each task
+- **Parallel Processing**: Handle multiple requests concurrently
+
+**Error Handling Strategies:**
+- **Retry Logic**: Implement exponential backoff
+- **Graceful Degradation**: Provide fallback responses
+- **Timeout Management**: Set appropriate timeouts
+- **Error Classification**: Handle different error types appropriately
+- **Logging and Monitoring**: Track errors and performance
+- **User Feedback**: Allow users to report issues
+
+**Security Considerations:**
+- **Input Validation**: Sanitize and validate all inputs
+- **Output Filtering**: Check responses for inappropriate content
+- **API Key Management**: Secure storage and rotation
+- **Rate Limiting**: Prevent abuse and manage costs
+- **Audit Logging**: Track usage and access patterns
+- **Privacy Protection**: Handle sensitive data appropriately
+
+**Cost Management:**
+- **Token Counting**: Monitor and optimize token usage
+- **Model Selection**: Use appropriate models for different tasks
+- **Caching Strategy**: Reduce redundant API calls
+- **Usage Limits**: Set per-user and per-application limits
+- **Monitoring**: Track costs and usage patterns
+- **Optimization**: Regularly review and improve efficiency
+            `,
+            codeExample: `
+// Production-ready LLM integration
+class ProductionLLMService {
+  private cache = new Map<string, { response: string; timestamp: number }>();
+  private rateLimiter = new Map<string, number[]>();
+  private readonly CACHE_TTL = 3600000; // 1 hour
+  private readonly RATE_LIMIT = 100; // requests per hour
+
+  constructor(
+    private apiKey: string,
+    private baseUrl: string = 'https://api.openai.com/v1'
+  ) {}
+
+  async generateWithCaching(
+    prompt: string,
+    options: LLMOptions = {}
+  ): Promise<LLMResponse> {
+    // Check cache first
+    const cacheKey = this.getCacheKey(prompt, options);
+    const cached = this.cache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      return { text: cached.response, cached: true };
+    }
+
+    // Check rate limits
+    if (!this.checkRateLimit(options.userId)) {
+      throw new Error('Rate limit exceeded');
+    }
+
+    try {
+      // Generate response with retry logic
+      const response = await this.generateWithRetry(prompt, options);
+      
+      // Cache the response
+      this.cache.set(cacheKey, {
+        response: response.text,
+        timestamp: Date.now()
+      });
+
+      return response;
+    } catch (error) {
+      // Handle errors gracefully
+      return this.handleError(error, prompt, options);
+    }
+  }
+
+  private async generateWithRetry(
+    prompt: string,
+    options: LLMOptions,
+    maxRetries: number = 3
+  ): Promise<LLMResponse> {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch(\`\${this.baseUrl}/chat/completions\`, {
+          method: 'POST',
+          headers: {
+            'Authorization': \`Bearer \${this.apiKey}\`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: options.model || 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: options.maxTokens || 1000,
+            temperature: options.temperature || 0.7,
+            stream: options.stream || false,
+          }),
+          signal: AbortSignal.timeout(30000), // 30 second timeout
+        });
+
+        if (!response.ok) {
+          throw new Error(\`HTTP \${response.status}: \${response.statusText}\`);
+        }
+
+        const data = await response.json();
+        
+        return {
+          text: data.choices[0].message.content,
+          tokens: data.usage.total_tokens,
+          model: data.model,
+          finishReason: data.choices[0].finish_reason,
+        };
+      } catch (error) {
+        if (attempt === maxRetries) {
+          throw error;
+        }
+        
+        // Exponential backoff
+        await new Promise(resolve => 
+          setTimeout(resolve, Math.pow(2, attempt) * 1000)
+        );
+      }
+    }
+  }
+
+  private checkRateLimit(userId?: string): boolean {
+    if (!userId) return true;
+    
+    const now = Date.now();
+    const userRequests = this.rateLimiter.get(userId) || [];
+    
+    // Remove old requests (older than 1 hour)
+    const recentRequests = userRequests.filter(
+      timestamp => now - timestamp < 3600000
+    );
+    
+    if (recentRequests.length >= this.RATE_LIMIT) {
+      return false;
+    }
+    
+    recentRequests.push(now);
+    this.rateLimiter.set(userId, recentRequests);
+    
+    return true;
+  }
+
+  private getCacheKey(prompt: string, options: LLMOptions): string {
+    return btoa(JSON.stringify({ prompt, options }));
+  }
+
+  private handleError(error: any, prompt: string, options: LLMOptions): LLMResponse {
+    console.error('LLM Error:', error);
+    
+    // Provide fallback response
+    return {
+      text: 'I apologize, but I encountered an error processing your request. Please try again later.',
+      tokens: 0,
+      model: 'fallback',
+      finishReason: 'error',
+      error: error.message,
+    };
+  }
+}
+
+// Usage with React hooks
+function useLLMGeneration() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const llmService = useMemo(() => new ProductionLLMService(
+    process.env.NEXT_PUBLIC_OPENAI_API_KEY!
+  ), []);
+
+  const generate = useCallback(async (prompt: string, options?: LLMOptions) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await llmService.generateWithCaching(prompt, options);
+      return response;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [llmService]);
+
+  return { generate, isLoading, error };
+}
+`
+          },
+          {
+            title: "Advanced Applications and Use Cases",
+            content: `
+Large Language Models enable a wide range of applications beyond simple text generation. Understanding these use cases helps you identify opportunities and implement effective solutions.
+
+**Content Generation Applications:**
+- **Blog Writing**: Automated content creation with SEO optimization
+- **Code Generation**: Automated programming assistance and debugging
+- **Creative Writing**: Story generation, poetry, and creative content
+- **Technical Documentation**: API docs, user guides, and tutorials
+- **Marketing Copy**: Product descriptions, ad copy, and email campaigns
+- **Social Media**: Post generation and engagement optimization
+
+**Analysis and Processing:**
+- **Sentiment Analysis**: Understanding emotions in text
+- **Text Summarization**: Condensing long documents
+- **Entity Extraction**: Identifying people, places, and concepts
+- **Classification**: Categorizing content automatically
+- **Translation**: Multi-language text conversion
+- **Question Answering**: Building intelligent FAQ systems
+
+**Conversational AI:**
+- **Customer Support**: Automated help desk and support
+- **Personal Assistants**: Task management and scheduling
+- **Educational Tutors**: Personalized learning assistance
+- **Therapy Bots**: Mental health support and guidance
+- **Sales Assistants**: Product recommendations and sales support
+- **Training Simulators**: Role-playing and skill development
+
+**Specialized Applications:**
+- **Code Review**: Automated code analysis and suggestions
+- **Legal Document Analysis**: Contract review and legal research
+- **Medical Diagnosis Support**: Symptom analysis and recommendations
+- **Financial Analysis**: Market research and investment insights
+- **Research Assistance**: Literature review and data analysis
+- **Creative Collaboration**: Brainstorming and idea generation
+
+**Integration Patterns:**
+- **RAG (Retrieval Augmented Generation)**: Combining LLMs with knowledge bases
+- **Function Calling**: Enabling LLMs to interact with external systems
+- **Multi-modal Applications**: Combining text with images, audio, and video
+- **Workflow Automation**: Integrating LLMs into business processes
+- **Real-time Processing**: Streaming and live interaction capabilities
+- **Personalization**: Adapting responses based on user history and preferences
+            `,
+            codeExample: `
+// Advanced LLM application examples
+class AdvancedLLMApplications {
+  constructor(private llmService: ProductionLLMService) {}
+
+  // RAG (Retrieval Augmented Generation) implementation
+  async answerWithContext(
+    question: string,
+    knowledgeBase: string[]
+  ): Promise<string> {
+    // Retrieve relevant context
+    const relevantContext = await this.retrieveRelevantContext(
+      question,
+      knowledgeBase
+    );
+
+    // Generate answer with context
+    const prompt = \`Context: \${relevantContext.join('\\n\\n')}
+
+Question: \${question}
+
+Please answer the question based on the provided context. If the context doesn't contain enough information, say so clearly.\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    return response.text;
+  }
+
+  // Function calling implementation
+  async processWithFunctions(
+    input: string,
+    availableFunctions: Record<string, Function>
+  ): Promise<any> {
+    const functionDescriptions = Object.keys(availableFunctions)
+      .map(name => \`\${name}: \${availableFunctions[name].description}\`)
+      .join('\\n');
+
+    const prompt = \`Available functions:
+\${functionDescriptions}
+
+User input: \${input}
+
+If the user's request requires calling a function, respond with:
+FUNCTION_CALL: function_name(parameters)
+
+Otherwise, respond normally.\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    
+    if (response.text.startsWith('FUNCTION_CALL:')) {
+      // Parse and execute function call
+      const functionCall = response.text.replace('FUNCTION_CALL:', '').trim();
+      return await this.executeFunctionCall(functionCall, availableFunctions);
+    }
+    
+    return response.text;
+  }
+
+  // Multi-step reasoning chain
+  async complexReasoning(problem: string): Promise<{
+    steps: string[];
+    conclusion: string;
+  }> {
+    const prompt = \`Problem: \${problem}
+
+Let's solve this step by step:
+
+Step 1: Understand the problem
+Step 2: Identify key information
+Step 3: Develop a solution approach
+Step 4: Work through the solution
+Step 5: Verify the answer
+
+Please work through each step clearly:\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    
+    // Parse the response to extract steps and conclusion
+    const lines = response.text.split('\\n');
+    const steps = lines.filter(line => line.startsWith('Step'));
+    const conclusion = lines[lines.length - 1];
+    
+    return { steps, conclusion };
+  }
+
+  // Sentiment analysis with confidence scoring
+  async analyzeSentiment(text: string): Promise<{
+    sentiment: 'positive' | 'negative' | 'neutral';
+    confidence: number;
+    reasoning: string;
+  }> {
+    const prompt = \`Analyze the sentiment of the following text:
+
+"\${text}"
+
+Provide your analysis in this format:
+Sentiment: [positive/negative/neutral]
+Confidence: [0.0-1.0]
+Reasoning: [brief explanation]
+
+Analysis:\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    
+    // Parse structured response
+    const lines = response.text.split('\\n');
+    const sentiment = lines.find(l => l.startsWith('Sentiment:'))?.split(':')[1].trim() as any;
+    const confidence = parseFloat(lines.find(l => l.startsWith('Confidence:'))?.split(':')[1].trim() || '0');
+    const reasoning = lines.find(l => l.startsWith('Reasoning:'))?.split(':')[1].trim() || '';
+    
+    return { sentiment, confidence, reasoning };
+  }
+
+  // Content generation with style adaptation
+  async generateStyledContent(
+    topic: string,
+    style: 'professional' | 'casual' | 'academic' | 'creative',
+    length: 'short' | 'medium' | 'long'
+  ): Promise<string> {
+    const stylePrompts = {
+      professional: 'Write in a professional, business-appropriate tone',
+      casual: 'Write in a friendly, conversational tone',
+      academic: 'Write in a formal, scholarly tone with proper citations',
+      creative: 'Write in an engaging, creative style with vivid descriptions'
+    };
+
+    const lengthGuidelines = {
+      short: '1-2 paragraphs',
+      medium: '3-5 paragraphs',
+      long: '6-10 paragraphs'
+    };
+
+    const prompt = \`Topic: \${topic}
+
+Style: \${stylePrompts[style]}
+Length: \${lengthGuidelines[length]}
+
+Please write content about the topic following the specified style and length guidelines:\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    return response.text;
+  }
+
+  private async retrieveRelevantContext(
+    question: string,
+    knowledgeBase: string[]
+  ): Promise<string[]> {
+    // Simple keyword-based retrieval (in production, use vector embeddings)
+    const keywords = question.toLowerCase().split(' ');
+    
+    return knowledgeBase
+      .filter(doc => 
+        keywords.some(keyword => 
+          doc.toLowerCase().includes(keyword)
+        )
+      )
+      .slice(0, 3); // Top 3 relevant documents
+  }
+
+  private async executeFunctionCall(
+    functionCall: string,
+    availableFunctions: Record<string, Function>
+  ): Promise<any> {
+    // Parse function name and parameters
+    const match = functionCall.match(/(\w+)\((.*)\)/);
+    if (!match) return 'Invalid function call format';
+    
+    const [, functionName, params] = match;
+    const func = availableFunctions[functionName];
+    
+    if (!func) return \`Function \${functionName} not found\`;
+    
+    try {
+      // Execute function with parsed parameters
+      const result = await func(params);
+      return result;
+    } catch (error) {
+      return \`Error executing function: \${error.message}\`;
+    }
+  }
+}
+`
           }
         ],
         conclusion: `
-Large Language Models represent a transformative technology that's reshaping how we build applications and interact with users. By understanding their capabilities, limitations, and best practices, you can harness their power to create intelligent, helpful, and responsible AI-powered solutions.
+Large Language Models represent a transformative technology that's reshaping how we build applications and interact with AI. By understanding their capabilities, limitations, and best practices for integration, you can create powerful, intelligent applications that provide real value to users.
 
-The key to successful LLM integration lies in thoughtful implementation: choosing the right model for your use case, implementing proper security measures, optimizing for performance and cost, and always keeping ethical considerations at the forefront of your development process.
+Key takeaways from this guide:
+- LLMs are powerful but require careful prompt engineering and integration
+- Production applications need robust error handling, caching, and rate limiting
+- Security and cost management are crucial considerations
+- Advanced applications like RAG and function calling unlock new possibilities
+- Continuous learning and adaptation are essential as the technology evolves
 
-As LLM technology continues to evolve rapidly, staying informed about new developments, best practices, and emerging patterns will be crucial for maintaining competitive and effective AI applications. The examples and frameworks provided in this guide offer a solid foundation for building production-ready LLM integrations that can scale with your needs.
+As you implement LLMs in your projects, remember to:
+- Start with simple use cases and gradually increase complexity
+- Always validate and sanitize inputs and outputs
+- Monitor performance, costs, and user satisfaction
+- Stay updated with the latest models and best practices
+- Consider the ethical implications of your AI applications
 
-Remember that LLMs are tools to augment human capabilities, not replace human judgment. The most successful applications combine the power of AI with thoughtful human oversight, creating experiences that are both intelligent and trustworthy.
+The future of software development is increasingly intertwined with AI, and Large Language Models are at the forefront of this transformation. By mastering these concepts and techniques, you're positioning yourself to build the next generation of intelligent applications.
 
-Start with simple implementations, iterate based on user feedback, and gradually add more sophisticated features as you become more comfortable with the technology. The future of AI-powered applications is bright, and with the knowledge from this guide, you're well-equipped to be part of that future.
+Continue experimenting, learning, and pushing the boundaries of what's possible with LLMs. The technology is rapidly evolving, and new opportunities emerge regularly. Stay curious, stay informed, and most importantly, keep building amazing things with AI.
         `,
         resources: [
           {
-            title: "OpenAI API Documentation",
+            title: "OpenAI Platform Documentation",
             url: "https://platform.openai.com/docs",
-            description: "Comprehensive documentation for OpenAI's GPT models and API"
+            description: "Comprehensive documentation for OpenAI's APIs and models"
           },
           {
-            title: "Anthropic Claude API",
-            url: "https://docs.anthropic.com/claude/reference",
-            description: "Documentation for Anthropic's Claude models and best practices"
-          },
-          {
-            title: "Google AI Studio",
-            url: "https://ai.google.dev/",
-            description: "Google's platform for building with Gemini and other AI models"
+            title: "Anthropic Claude Documentation",
+            url: "https://docs.anthropic.com/claude/docs",
+            description: "Official documentation for Claude AI and Constitutional AI"
           },
           {
             title: "Hugging Face Transformers",
@@ -3127,14 +2500,9 @@ Start with simple implementations, iterate based on user feedback, and gradually
             description: "Open-source library for working with transformer models"
           },
           {
-            title: "LangChain Documentation",
+            title: "LangChain Framework",
             url: "https://python.langchain.com/docs/get_started/introduction",
             description: "Framework for developing applications with language models"
-          },
-          {
-            title: "AI Safety Guidelines",
-            url: "https://www.anthropic.com/safety",
-            description: "Best practices for building safe and beneficial AI systems"
           },
           {
             title: "Prompt Engineering Guide",
@@ -3142,9 +2510,9 @@ Start with simple implementations, iterate based on user feedback, and gradually
             description: "Comprehensive guide to prompt engineering techniques"
           },
           {
-            title: "LLM Evaluation Metrics",
-            url: "https://arxiv.org/abs/2307.03109",
-            description: "Research paper on evaluating large language model performance"
+            title: "Papers With Code - NLP",
+            url: "https://paperswithcode.com/area/natural-language-processing",
+            description: "Latest research papers and benchmarks in NLP and LLMs"
           }
         ]
       }
