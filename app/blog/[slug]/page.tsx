@@ -1775,6 +1775,747 @@ The future of AI image generation is bright, and by mastering these concepts tod
           }
         ]
       }
+    },
+    "understanding-large-language-models": {
+      id: 4,
+      title: "Understanding Large Language Models: A Developer's Guide",
+      description: "Demystify LLMs and learn how to effectively integrate them into your applications with practical examples.",
+      category: "Guide",
+      readTime: "18 min read",
+      author: "Emily Zhang",
+      date: "2024-01-08",
+      slug: "understanding-large-language-models",
+      content: {
+        introduction: `
+Large Language Models (LLMs) have revolutionized the way we interact with artificial intelligence. From ChatGPT to GPT-4, these powerful models are transforming industries and enabling developers to create intelligent applications that understand and generate human-like text. However, for many developers, LLMs can seem like a black box - complex, mysterious, and difficult to integrate effectively.
+
+This comprehensive guide will demystify Large Language Models and provide you with practical knowledge to integrate them into your applications. We'll explore how LLMs work, their capabilities and limitations, best practices for implementation, and real-world examples that you can apply immediately.
+
+Whether you're building a chatbot, content generation tool, or any AI-powered application, understanding LLMs is crucial for creating effective and responsible AI solutions. Let's dive deep into the world of Large Language Models and unlock their potential for your projects.
+        `,
+        sections: [
+          {
+            title: "What Are Large Language Models?",
+            content: `
+Large Language Models are neural networks trained on vast amounts of text data to understand and generate human-like text. They represent a breakthrough in natural language processing, capable of performing a wide range of tasks without task-specific training.
+
+**Core Characteristics:**
+- **Scale**: Trained on billions or trillions of parameters
+- **Generalization**: Can perform multiple tasks without specific training
+- **Context Understanding**: Maintain context across long conversations
+- **Emergent Abilities**: Develop capabilities not explicitly programmed
+- **Few-shot Learning**: Learn new tasks from just a few examples
+
+**How LLMs Work:**
+LLMs use transformer architecture, which processes text by paying attention to different parts of the input simultaneously. This allows them to understand context, relationships, and patterns in language more effectively than previous approaches.
+
+**Popular LLMs:**
+- **GPT-4**: OpenAI's most advanced model with strong reasoning capabilities
+- **Claude**: Anthropic's constitutional AI focused on safety and helpfulness
+- **LLaMA**: Meta's open-source models for research and development
+- **Gemini**: Google's multimodal AI with text, image, and code capabilities
+- **PaLM**: Google's Pathways Language Model for complex reasoning tasks
+
+**Key Capabilities:**
+- Text generation and completion
+- Language translation
+- Code generation and debugging
+- Question answering and reasoning
+- Summarization and analysis
+- Creative writing and storytelling
+- Mathematical problem solving
+- Conversational AI and dialogue
+
+**Understanding Model Parameters:**
+The "large" in Large Language Models refers to the number of parameters - the weights and connections in the neural network. More parameters generally mean better performance but also higher computational costs and complexity.
+            `,
+            codeExample: `
+// Basic LLM interaction example
+interface LLMRequest {
+  model: string;
+  prompt: string;
+  maxTokens: number;
+  temperature: number;
+  topP?: number;
+  frequencyPenalty?: number;
+  presencePenalty?: number;
+}
+
+interface LLMResponse {
+  text: string;
+  tokens: number;
+  model: string;
+  finishReason: 'stop' | 'length' | 'content_filter';
+}
+
+// Example LLM service wrapper
+class LLMService {
+  private apiKey: string;
+  private baseUrl: string;
+
+  constructor(apiKey: string, baseUrl: string = 'https://api.openai.com/v1') {
+    this.apiKey = apiKey;
+    this.baseUrl = baseUrl;
+  }
+
+  async generateText(request: LLMRequest): Promise<LLMResponse> {
+    const response = await fetch(\`\${this.baseUrl}/completions\`, {
+      method: 'POST',
+      headers: {
+        'Authorization': \`Bearer \${this.apiKey}\`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: request.model,
+        prompt: request.prompt,
+        max_tokens: request.maxTokens,
+        temperature: request.temperature,
+        top_p: request.topP,
+        frequency_penalty: request.frequencyPenalty,
+        presence_penalty: request.presencePenalty,
+      }),
+    });
+
+    const data = await response.json();
+    
+    return {
+      text: data.choices[0].text,
+      tokens: data.usage.total_tokens,
+      model: request.model,
+      finishReason: data.choices[0].finish_reason,
+    };
+  }
+}
+
+// Usage example
+const llm = new LLMService(process.env.OPENAI_API_KEY!);
+
+const response = await llm.generateText({
+  model: 'gpt-3.5-turbo',
+  prompt: 'Explain quantum computing in simple terms:',
+  maxTokens: 200,
+  temperature: 0.7,
+});
+
+console.log(response.text);
+`
+          },
+          {
+            title: "Effective Prompt Engineering",
+            content: `
+Prompt engineering is the art and science of crafting inputs that guide LLMs to produce desired outputs. It's one of the most important skills for working with LLMs effectively.
+
+**Fundamental Principles:**
+- **Be Specific**: Provide clear, detailed instructions
+- **Use Examples**: Show the model what you want with examples
+- **Set Context**: Provide relevant background information
+- **Define Format**: Specify the desired output format
+- **Iterate and Refine**: Test and improve your prompts
+
+**Prompt Structure Best Practices:**
+1. **System Message**: Define the AI's role and behavior
+2. **Context**: Provide relevant background information
+3. **Task Description**: Clearly state what you want
+4. **Examples**: Show desired input/output patterns
+5. **Constraints**: Specify limitations or requirements
+6. **Output Format**: Define how the response should be structured
+
+**Common Prompt Patterns:**
+- **Few-shot Learning**: Provide examples of desired behavior
+- **Chain of Thought**: Ask the model to explain its reasoning
+- **Role Playing**: Have the model assume a specific persona
+- **Template Filling**: Use structured formats for consistent outputs
+- **Instruction Following**: Give step-by-step instructions
+
+**Advanced Techniques:**
+- **Prompt Chaining**: Break complex tasks into smaller steps
+- **Self-Reflection**: Ask the model to evaluate its own responses
+- **Constraint Satisfaction**: Use rules to guide behavior
+- **Dynamic Prompting**: Adjust prompts based on context
+- **Retrieval Augmented Generation**: Combine with external knowledge
+
+**Common Pitfalls to Avoid:**
+- Ambiguous instructions
+- Overly complex prompts
+- Inconsistent examples
+- Lack of constraints
+- Ignoring model limitations
+            `,
+            codeExample: `
+// Prompt engineering examples
+class PromptEngineer {
+  // System message template
+  static createSystemMessage(role: string, guidelines: string[]): string {
+    return \`You are a \${role}. Follow these guidelines:
+\${guidelines.map(g => \`- \${g}\`).join('\\n')}
+
+Always be helpful, accurate, and professional in your responses.\`;
+  }
+
+  // Few-shot learning example
+  static createFewShotPrompt(task: string, examples: Array<{input: string, output: string}>): string {
+    const exampleText = examples.map(ex => 
+      \`Input: \${ex.input}\\nOutput: \${ex.output}\`
+    ).join('\\n\\n');
+
+    return \`Task: \${task}
+
+Examples:
+\${exampleText}
+
+Now complete the following:
+Input: \`;
+  }
+
+  // Chain of thought prompting
+  static createChainOfThoughtPrompt(question: string): string {
+    return \`Question: \${question}
+
+Let's think step by step:
+1. First, I need to understand what is being asked
+2. Then, I'll identify the key information
+3. Next, I'll work through the logic
+4. Finally, I'll provide a clear answer
+
+Step 1:\`;
+  }
+
+  // Structured output prompt
+  static createStructuredPrompt(task: string, outputSchema: object): string {
+    return \`Task: \${task}
+
+Please provide your response in the following JSON format:
+\${JSON.stringify(outputSchema, null, 2)}
+
+Response:\`;
+  }
+}
+
+// Usage examples
+const systemMessage = PromptEngineer.createSystemMessage(
+  'helpful programming assistant',
+  [
+    'Provide clear, concise code examples',
+    'Explain complex concepts in simple terms',
+    'Always include error handling',
+    'Suggest best practices and optimizations'
+  ]
+);
+
+const fewShotPrompt = PromptEngineer.createFewShotPrompt(
+  'Convert natural language to SQL queries',
+  [
+    {
+      input: 'Find all users who signed up last month',
+      output: 'SELECT * FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)'
+    },
+    {
+      input: 'Get the top 10 products by sales',
+      output: 'SELECT * FROM products ORDER BY sales DESC LIMIT 10'
+    }
+  ]
+);
+
+const structuredPrompt = PromptEngineer.createStructuredPrompt(
+  'Analyze the sentiment of customer feedback',
+  {
+    sentiment: 'positive | negative | neutral',
+    confidence: 'number between 0 and 1',
+    key_themes: ['array of main topics'],
+    suggested_action: 'string with recommendation'
+  }
+);
+`
+          },
+          {
+            title: "Integration Patterns and Best Practices",
+            content: `
+Successfully integrating LLMs into your applications requires understanding various patterns, architectures, and best practices. Here's how to build robust, scalable LLM-powered applications.
+
+**Architecture Patterns:**
+- **Direct API Integration**: Simple request/response pattern
+- **Streaming Responses**: Real-time text generation
+- **Batch Processing**: Handle multiple requests efficiently
+- **Caching Layer**: Reduce API calls and improve performance
+- **Fallback Systems**: Handle failures gracefully
+- **Rate Limiting**: Manage API usage and costs
+
+**Performance Optimization:**
+- **Response Caching**: Cache common queries and responses
+- **Request Batching**: Group multiple requests when possible
+- **Streaming**: Use streaming for better user experience
+- **Token Optimization**: Minimize token usage without losing quality
+- **Model Selection**: Choose the right model for each task
+- **Parallel Processing**: Handle multiple requests concurrently
+
+**Error Handling Strategies:**
+- **Retry Logic**: Implement exponential backoff
+- **Graceful Degradation**: Provide fallback responses
+- **Timeout Management**: Set appropriate timeouts
+- **Error Classification**: Handle different error types appropriately
+- **Logging and Monitoring**: Track errors and performance
+- **User Feedback**: Allow users to report issues
+
+**Security Considerations:**
+- **Input Validation**: Sanitize and validate all inputs
+- **Output Filtering**: Check responses for inappropriate content
+- **API Key Management**: Secure storage and rotation
+- **Rate Limiting**: Prevent abuse and manage costs
+- **Audit Logging**: Track usage and access patterns
+- **Privacy Protection**: Handle sensitive data appropriately
+
+**Cost Management:**
+- **Token Counting**: Monitor and optimize token usage
+- **Model Selection**: Use appropriate models for different tasks
+- **Caching Strategy**: Reduce redundant API calls
+- **Usage Limits**: Set per-user and per-application limits
+- **Monitoring**: Track costs and usage patterns
+- **Optimization**: Regularly review and improve efficiency
+            `,
+            codeExample: `
+// Production-ready LLM integration
+class ProductionLLMService {
+  private cache = new Map<string, { response: string; timestamp: number }>();
+  private rateLimiter = new Map<string, number[]>();
+  private readonly CACHE_TTL = 3600000; // 1 hour
+  private readonly RATE_LIMIT = 100; // requests per hour
+
+  constructor(
+    private apiKey: string,
+    private baseUrl: string = 'https://api.openai.com/v1'
+  ) {}
+
+  async generateWithCaching(
+    prompt: string,
+    options: LLMOptions = {}
+  ): Promise<LLMResponse> {
+    // Check cache first
+    const cacheKey = this.getCacheKey(prompt, options);
+    const cached = this.cache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      return { text: cached.response, cached: true };
+    }
+
+    // Check rate limits
+    if (!this.checkRateLimit(options.userId)) {
+      throw new Error('Rate limit exceeded');
+    }
+
+    try {
+      // Generate response with retry logic
+      const response = await this.generateWithRetry(prompt, options);
+      
+      // Cache the response
+      this.cache.set(cacheKey, {
+        response: response.text,
+        timestamp: Date.now()
+      });
+
+      return response;
+    } catch (error) {
+      // Handle errors gracefully
+      return this.handleError(error, prompt, options);
+    }
+  }
+
+  private async generateWithRetry(
+    prompt: string,
+    options: LLMOptions,
+    maxRetries: number = 3
+  ): Promise<LLMResponse> {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch(\`\${this.baseUrl}/chat/completions\`, {
+          method: 'POST',
+          headers: {
+            'Authorization': \`Bearer \${this.apiKey}\`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: options.model || 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: options.maxTokens || 1000,
+            temperature: options.temperature || 0.7,
+            stream: options.stream || false,
+          }),
+          signal: AbortSignal.timeout(30000), // 30 second timeout
+        });
+
+        if (!response.ok) {
+          throw new Error(\`HTTP \${response.status}: \${response.statusText}\`);
+        }
+
+        const data = await response.json();
+        
+        return {
+          text: data.choices[0].message.content,
+          tokens: data.usage.total_tokens,
+          model: data.model,
+          finishReason: data.choices[0].finish_reason,
+        };
+      } catch (error) {
+        if (attempt === maxRetries) {
+          throw error;
+        }
+        
+        // Exponential backoff
+        await new Promise(resolve => 
+          setTimeout(resolve, Math.pow(2, attempt) * 1000)
+        );
+      }
+    }
+  }
+
+  private checkRateLimit(userId?: string): boolean {
+    if (!userId) return true;
+    
+    const now = Date.now();
+    const userRequests = this.rateLimiter.get(userId) || [];
+    
+    // Remove old requests (older than 1 hour)
+    const recentRequests = userRequests.filter(
+      timestamp => now - timestamp < 3600000
+    );
+    
+    if (recentRequests.length >= this.RATE_LIMIT) {
+      return false;
+    }
+    
+    recentRequests.push(now);
+    this.rateLimiter.set(userId, recentRequests);
+    
+    return true;
+  }
+
+  private getCacheKey(prompt: string, options: LLMOptions): string {
+    return btoa(JSON.stringify({ prompt, options }));
+  }
+
+  private handleError(error: any, prompt: string, options: LLMOptions): LLMResponse {
+    console.error('LLM Error:', error);
+    
+    // Provide fallback response
+    return {
+      text: 'I apologize, but I encountered an error processing your request. Please try again later.',
+      tokens: 0,
+      model: 'fallback',
+      finishReason: 'error',
+      error: error.message,
+    };
+  }
+}
+
+// Usage with React hooks
+function useLLMGeneration() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const llmService = useMemo(() => new ProductionLLMService(
+    process.env.NEXT_PUBLIC_OPENAI_API_KEY!
+  ), []);
+
+  const generate = useCallback(async (prompt: string, options?: LLMOptions) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await llmService.generateWithCaching(prompt, options);
+      return response;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [llmService]);
+
+  return { generate, isLoading, error };
+}
+`
+          },
+          {
+            title: "Advanced Applications and Use Cases",
+            content: `
+Large Language Models enable a wide range of applications beyond simple text generation. Understanding these use cases helps you identify opportunities and implement effective solutions.
+
+**Content Generation Applications:**
+- **Blog Writing**: Automated content creation with SEO optimization
+- **Code Generation**: Automated programming assistance and debugging
+- **Creative Writing**: Story generation, poetry, and creative content
+- **Technical Documentation**: API docs, user guides, and tutorials
+- **Marketing Copy**: Product descriptions, ad copy, and email campaigns
+- **Social Media**: Post generation and engagement optimization
+
+**Analysis and Processing:**
+- **Sentiment Analysis**: Understanding emotions in text
+- **Text Summarization**: Condensing long documents
+- **Entity Extraction**: Identifying people, places, and concepts
+- **Classification**: Categorizing content automatically
+- **Translation**: Multi-language text conversion
+- **Question Answering**: Building intelligent FAQ systems
+
+**Conversational AI:**
+- **Customer Support**: Automated help desk and support
+- **Personal Assistants**: Task management and scheduling
+- **Educational Tutors**: Personalized learning assistance
+- **Therapy Bots**: Mental health support and guidance
+- **Sales Assistants**: Product recommendations and sales support
+- **Training Simulators**: Role-playing and skill development
+
+**Specialized Applications:**
+- **Code Review**: Automated code analysis and suggestions
+- **Legal Document Analysis**: Contract review and legal research
+- **Medical Diagnosis Support**: Symptom analysis and recommendations
+- **Financial Analysis**: Market research and investment insights
+- **Research Assistance**: Literature review and data analysis
+- **Creative Collaboration**: Brainstorming and idea generation
+
+**Integration Patterns:**
+- **RAG (Retrieval Augmented Generation)**: Combining LLMs with knowledge bases
+- **Function Calling**: Enabling LLMs to interact with external systems
+- **Multi-modal Applications**: Combining text with images, audio, and video
+- **Workflow Automation**: Integrating LLMs into business processes
+- **Real-time Processing**: Streaming and live interaction capabilities
+- **Personalization**: Adapting responses based on user history and preferences
+            `,
+            codeExample: `
+// Advanced LLM application examples
+class AdvancedLLMApplications {
+  constructor(private llmService: ProductionLLMService) {}
+
+  // RAG (Retrieval Augmented Generation) implementation
+  async answerWithContext(
+    question: string,
+    knowledgeBase: string[]
+  ): Promise<string> {
+    // Retrieve relevant context
+    const relevantContext = await this.retrieveRelevantContext(
+      question,
+      knowledgeBase
+    );
+
+    // Generate answer with context
+    const prompt = \`Context: \${relevantContext.join('\\n\\n')}
+
+Question: \${question}
+
+Please answer the question based on the provided context. If the context doesn't contain enough information, say so clearly.\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    return response.text;
+  }
+
+  // Function calling implementation
+  async processWithFunctions(
+    input: string,
+    availableFunctions: Record<string, Function>
+  ): Promise<any> {
+    const functionDescriptions = Object.keys(availableFunctions)
+      .map(name => \`\${name}: \${availableFunctions[name].description}\`)
+      .join('\\n');
+
+    const prompt = \`Available functions:
+\${functionDescriptions}
+
+User input: \${input}
+
+If the user's request requires calling a function, respond with:
+FUNCTION_CALL: function_name(parameters)
+
+Otherwise, respond normally.\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    
+    if (response.text.startsWith('FUNCTION_CALL:')) {
+      // Parse and execute function call
+      const functionCall = response.text.replace('FUNCTION_CALL:', '').trim();
+      return await this.executeFunctionCall(functionCall, availableFunctions);
+    }
+    
+    return response.text;
+  }
+
+  // Multi-step reasoning chain
+  async complexReasoning(problem: string): Promise<{
+    steps: string[];
+    conclusion: string;
+  }> {
+    const prompt = \`Problem: \${problem}
+
+Let's solve this step by step:
+
+Step 1: Understand the problem
+Step 2: Identify key information
+Step 3: Develop a solution approach
+Step 4: Work through the solution
+Step 5: Verify the answer
+
+Please work through each step clearly:\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    
+    // Parse the response to extract steps and conclusion
+    const lines = response.text.split('\\n');
+    const steps = lines.filter(line => line.startsWith('Step'));
+    const conclusion = lines[lines.length - 1];
+    
+    return { steps, conclusion };
+  }
+
+  // Sentiment analysis with confidence scoring
+  async analyzeSentiment(text: string): Promise<{
+    sentiment: 'positive' | 'negative' | 'neutral';
+    confidence: number;
+    reasoning: string;
+  }> {
+    const prompt = \`Analyze the sentiment of the following text:
+
+"\${text}"
+
+Provide your analysis in this format:
+Sentiment: [positive/negative/neutral]
+Confidence: [0.0-1.0]
+Reasoning: [brief explanation]
+
+Analysis:\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    
+    // Parse structured response
+    const lines = response.text.split('\\n');
+    const sentiment = lines.find(l => l.startsWith('Sentiment:'))?.split(':')[1].trim() as any;
+    const confidence = parseFloat(lines.find(l => l.startsWith('Confidence:'))?.split(':')[1].trim() || '0');
+    const reasoning = lines.find(l => l.startsWith('Reasoning:'))?.split(':')[1].trim() || '';
+    
+    return { sentiment, confidence, reasoning };
+  }
+
+  // Content generation with style adaptation
+  async generateStyledContent(
+    topic: string,
+    style: 'professional' | 'casual' | 'academic' | 'creative',
+    length: 'short' | 'medium' | 'long'
+  ): Promise<string> {
+    const stylePrompts = {
+      professional: 'Write in a professional, business-appropriate tone',
+      casual: 'Write in a friendly, conversational tone',
+      academic: 'Write in a formal, scholarly tone with proper citations',
+      creative: 'Write in an engaging, creative style with vivid descriptions'
+    };
+
+    const lengthGuidelines = {
+      short: '1-2 paragraphs',
+      medium: '3-5 paragraphs',
+      long: '6-10 paragraphs'
+    };
+
+    const prompt = \`Topic: \${topic}
+
+Style: \${stylePrompts[style]}
+Length: \${lengthGuidelines[length]}
+
+Please write content about the topic following the specified style and length guidelines:\`;
+
+    const response = await this.llmService.generateWithCaching(prompt);
+    return response.text;
+  }
+
+  private async retrieveRelevantContext(
+    question: string,
+    knowledgeBase: string[]
+  ): Promise<string[]> {
+    // Simple keyword-based retrieval (in production, use vector embeddings)
+    const keywords = question.toLowerCase().split(' ');
+    
+    return knowledgeBase
+      .filter(doc => 
+        keywords.some(keyword => 
+          doc.toLowerCase().includes(keyword)
+        )
+      )
+      .slice(0, 3); // Top 3 relevant documents
+  }
+
+  private async executeFunctionCall(
+    functionCall: string,
+    availableFunctions: Record<string, Function>
+  ): Promise<any> {
+    // Parse function name and parameters
+    const match = functionCall.match(/(\w+)\((.*)\)/);
+    if (!match) return 'Invalid function call format';
+    
+    const [, functionName, params] = match;
+    const func = availableFunctions[functionName];
+    
+    if (!func) return \`Function \${functionName} not found\`;
+    
+    try {
+      // Execute function with parsed parameters
+      const result = await func(params);
+      return result;
+    } catch (error) {
+      return \`Error executing function: \${error.message}\`;
+    }
+  }
+}
+`
+          }
+        ],
+        conclusion: `
+Large Language Models represent a transformative technology that's reshaping how we build applications and interact with AI. By understanding their capabilities, limitations, and best practices for integration, you can create powerful, intelligent applications that provide real value to users.
+
+Key takeaways from this guide:
+- LLMs are powerful but require careful prompt engineering and integration
+- Production applications need robust error handling, caching, and rate limiting
+- Security and cost management are crucial considerations
+- Advanced applications like RAG and function calling unlock new possibilities
+- Continuous learning and adaptation are essential as the technology evolves
+
+As you implement LLMs in your projects, remember to:
+- Start with simple use cases and gradually increase complexity
+- Always validate and sanitize inputs and outputs
+- Monitor performance, costs, and user satisfaction
+- Stay updated with the latest models and best practices
+- Consider the ethical implications of your AI applications
+
+The future of software development is increasingly intertwined with AI, and Large Language Models are at the forefront of this transformation. By mastering these concepts and techniques, you're positioning yourself to build the next generation of intelligent applications.
+
+Continue experimenting, learning, and pushing the boundaries of what's possible with LLMs. The technology is rapidly evolving, and new opportunities emerge regularly. Stay curious, stay informed, and most importantly, keep building amazing things with AI.
+        `,
+        resources: [
+          {
+            title: "OpenAI Platform Documentation",
+            url: "https://platform.openai.com/docs",
+            description: "Comprehensive documentation for OpenAI's APIs and models"
+          },
+          {
+            title: "Anthropic Claude Documentation",
+            url: "https://docs.anthropic.com/claude/docs",
+            description: "Official documentation for Claude AI and Constitutional AI"
+          },
+          {
+            title: "Hugging Face Transformers",
+            url: "https://huggingface.co/docs/transformers/index",
+            description: "Open-source library for working with transformer models"
+          },
+          {
+            title: "LangChain Framework",
+            url: "https://python.langchain.com/docs/get_started/introduction",
+            description: "Framework for developing applications with language models"
+          },
+          {
+            title: "Prompt Engineering Guide",
+            url: "https://www.promptingguide.ai/",
+            description: "Comprehensive guide to prompt engineering techniques"
+          },
+          {
+            title: "Papers With Code - NLP",
+            url: "https://paperswithcode.com/area/natural-language-processing",
+            description: "Latest research papers and benchmarks in NLP and LLMs"
+          }
+        ]
+      }
     }
   }
 
