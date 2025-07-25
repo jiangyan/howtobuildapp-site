@@ -22,6 +22,105 @@ import {
 const getBlogPost = (slug: string) => {
   const blogPosts = {
     "building-ai-chatbot-nextjs-openai": {
+        "ai-powered-search-vector-databases": {
+    id: 6,
+    title: "Building AI-Powered Search with Vector Databases",
+    description: "Learn how to implement semantic search using vector databases and embedding models for better user experiences.",
+    category: "Tutorial",
+    readTime: "25 min read",
+    author: "David Park",
+    date: "2024-01-05",
+    slug: "ai-powered-search-vector-databases",
+    featured: false,
+    content: {
+      introduction: ` Semantic search goes beyond simple keyword matching by understanding the meaning of user queries. Vector databases are designed to store and index high-dimensional embeddings produced by machine learning models, enabling efficient similarity search and retrieval. Unlike relational databases, vector databases use approximate nearest neighbor algorithms to find vectors that are closest to a query vector, which is essential for AI-powered search engines. `,
+      sections: [
+        {
+          title: "Why Vector Databases Matter for Search",
+          content: ` Vector databases store embeddings representing documents, images or other objects in a vector space model and support similarity search via approximate nearest neighbor algorithms【496141778657771†L313-L346】. This capability powers semantic search, recommendation systems and retrieval‑augmented generation (RAG). In RAG, embeddings of documents are computed and stored in the vector database; query embeddings are used to fetch relevant documents that are supplied to a language model for context【496141778657771†L336-L345】. `,
+        },
+        {
+          title: "Understanding Embeddings and Distance Metrics",
+          content: ` Embeddings are numeric vectors produced by models like BERT that encode semantic meaning. Vector databases provide efficient storage and indexing of these vectors and allow similarity search using distance metrics such as cosine similarity, Euclidean distance or dot product【309544849551729†L217-L276】. Modern vector databases employ indexing techniques like HNSW or locality-sensitive hashing to scale to millions of vectors【496141778657771†L313-L346】. `,
+        },
+        {
+          title: "Setting Up and Using Qdrant",
+          content: ` Qdrant is an open-source vector similarity search engine. You can run it locally with Docker and create a collection specifying the vector size and distance metric. Once running, you can insert vectors with payloads and perform queries to retrieve the nearest neighbors. `,
+          codeExample: ` # Run Qdrant via Docker
+
+docker pull qdrant/qdrant
+
+docker run -p 6333:6333 qdrant/qdrant
+
+# Python example
+from qdrant_client import QdrantClient
+from qdrant_client.models import VectorParams, Distance, PointStruct
+
+client = QdrantClient("http://localhost:6333")
+client.create_collection(
+    collection_name="document_vectors",
+    vectors_config=VectorParams(size=768, distance=Distance.COSINE),
+)
+
+# Insert vectors
+points = [
+    PointStruct(id=1, vector=[0.1, 0.2, 0.3, ...], payload={"text": "Hello world"}),
+    # ...
+]
+client.upsert(collection_name="document_vectors", points=points)
+
+# Query similar vectors
+query_vector = [0.1, 0.2, 0.25, ...]
+results = client.query(
+    collection_name="document_vectors",
+    query_vector=query_vector,
+    limit=5,
+)
+for r in results:
+    print(r.id, r.score)
+`,
+        },
+        {
+          title: "Best Practices and Considerations",
+          content: ` Choose an embedding model suited to your domain and normalize vectors before insertion. Attach metadata in the payload to filter search results. Tune index parameters (like HNSW M and ef) to balance search speed and accuracy and evaluate distance metrics for your use case. Vector databases are optimized for large-scale high-dimensional data and support real-time analytics【309544849551729†L318-L327】. `,
+        },
+      ],
+      conclusion: ` Vector databases like Qdrant empower developers to build AI-powered search experiences by leveraging embeddings and similarity search. By understanding how vector databases work and following best practices, you can implement semantic search and retrieval-augmented systems that deliver more relevant results to users. `,
+      faqs: [
+        {
+          question: "What is the difference between a vector database and a traditional database?",
+          answer: "Traditional databases store structured data and perform exact matching. Vector databases store high-dimensional embeddings and perform similarity search using distance metrics, making them ideal for semantic search and recommendations.",
+        },
+        {
+          question: "Can I use vector databases with languages other than Python?",
+          answer: "Yes. Qdrant exposes REST and gRPC APIs and has clients for multiple languages including TypeScript, Rust and Go. You can integrate a vector database into any platform that can send HTTP requests.",
+        },
+        {
+          question: "Do I need to normalize vectors before storing them?",
+          answer: "Normalization (e.g., unit length) is recommended when using cosine similarity or dot product to ensure fair distance comparisons. Some vector databases can automatically normalize vectors.",
+        },
+        {
+          question: "Are there alternatives to Qdrant?",
+          answer: "Other vector databases include Pinecone, Weaviate, Milvus, Chroma and others. The best choice depends on your requirements such as hosting preferences, scalability and pricing.",
+        },
+      ],
+      resources: [
+        {
+          title: "Vector database – Wikipedia",
+          url: "https://en.wikipedia.org/wiki/Vector_database",
+        },
+        {
+          title: "Qdrant documentation – Intro",
+          url: "https://qdrant.tech/documentation/intro/",
+        },
+        {
+          title: "Qdrant Quickstart",
+          url: "https://qdrant.tech/documentation/quick_start/",
+        },
+      ],
+    },
+  },
+
       id: 1,
       title: "Building Your First AI Chatbot with Next.js and OpenAI",
       description: "Learn how to create an intelligent chatbot using the latest AI technologies and modern web development practices.",
