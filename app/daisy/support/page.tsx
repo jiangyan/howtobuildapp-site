@@ -36,9 +36,7 @@ export default function DaisySupport() {
 
       <h2>Contact</h2>
       <p>
-        Use the{" "}
-        <a href="https://letsbuild.fun/en/contact">contact form</a> or email{" "}
-        <a href="mailto:privacy@letsbuild.fun">privacy@letsbuild.fun</a>.
+        Email <a href="mailto:jiangyan@howtobuild.app">jiangyan@howtobuild.app</a>.
         Include your iOS version and, if you can, the log from Settings,
         Diagnostics.
       </p>

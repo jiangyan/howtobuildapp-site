@@ -60,7 +60,7 @@ export default function DaisyPrivacy() {
 
       <h2>Contact</h2>
       <p>
-        Questions: <a href="mailto:privacy@letsbuild.fun">privacy@letsbuild.fun</a>
+        Questions: <a href="mailto:jiangyan@howtobuild.app">jiangyan@howtobuild.app</a>
       </p>
     </article>
   );
