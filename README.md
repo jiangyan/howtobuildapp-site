@@ -1,30 +1,27 @@
-# Howtobuild app website
+# How to Build · The Idea Lab
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+An interactive showcase of building with AI. Three working browser demos — a habit tracker, focus timer, and color palette generator — with reusable prompts and a practical build process.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/jiangyans-projects/v0-howtobuild-app-website)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/lAfO0cUnsUh)
+The workbench runs curated examples locally. It does not call an AI service or claim to generate arbitrary apps. Demo state lasts for the page session; nothing is sent to a server.
 
-## Overview
+## Development
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+Requires Node.js 22 or newer.
+
+```sh
+npm ci
+npm run dev
+```
+
+## Validation
+
+```sh
+npm run typecheck
+npm run build
+```
 
 ## Deployment
 
-Your project is live at:
+Push to `main` to trigger the existing Vercel integration. Use the Next.js framework preset, `npm ci` for installation, and `npm run build` for the build. No environment variables or API keys are required.
 
-**[https://vercel.com/jiangyans-projects/v0-howtobuild-app-website](https://vercel.com/jiangyans-projects/v0-howtobuild-app-website)**
-
-## Build your app
-
-Continue building your app on:
-
-**[https://v0.dev/chat/projects/lAfO0cUnsUh](https://v0.dev/chat/projects/lAfO0cUnsUh)**
-
-## How It Works
-
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+Built with Next.js, React, TypeScript, and plain CSS. The previous site has been completely replaced.
