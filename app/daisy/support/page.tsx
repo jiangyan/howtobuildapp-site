@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/daisy/support" },
   title: "Daisy — Support",
   description: "Getting started with Daisy, answers to common questions, and how to reach us.",
 };

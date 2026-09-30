@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/daisy" },
   title: "Daisy — a client for your own Hysteria 2 and VLESS servers",
   description:
     "Daisy connects your iPhone or iPad to your own Hysteria 2 or VLESS server and routes every app by your rules. No accounts, no servers, no data collected.",

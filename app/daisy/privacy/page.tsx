@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/daisy/privacy" },
   title: "Daisy — Privacy Policy",
   description:
     "Daisy collects no data and never sells, uses or discloses any data. This policy explains what stays on your device and who else takes part in a connection.",
