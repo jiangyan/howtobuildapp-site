@@ -649,7 +649,7 @@ export default function Home() {
         <a className="wordmark" href="#">
           howtobuild<span className="brand-dot">.app</span>
         </a>
-        <p>An independent experiment in making things. · How to Build LLC</p>
+        <p>&copy; {new Date().getFullYear()} How to Build LLC. All rights reserved.</p>
         <a href="#playground">
           Go make something <Arrow diagonal />
         </a>
