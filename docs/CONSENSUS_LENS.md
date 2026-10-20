@@ -14,7 +14,8 @@ The existing How to Build and Daisy pages are unchanged.
 
 `next.config.mjs` rewrites only the three named custom-host routes. Navigation
 uses the incoming Host header to keep subdirectory previews functional.
-Canonical URLs point to the requested custom domain.
+Canonical URLs use clean custom-domain URLs on that host and the working
+`howtobuild.app/consensus-lens` URLs otherwise.
 
 ## Hosting setup
 

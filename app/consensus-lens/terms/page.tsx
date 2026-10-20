@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { CONSENSUS_ORIGIN } from "../links";
+import { consensusPageUrl } from "../links";
 import styles from "../site.module.css";
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  return {
   title: "Terms of Use",
   description: "Personal-use scope and important limitations of Consensus Lens.",
-  alternates: { canonical: `${CONSENSUS_ORIGIN}/terms` },
-};
+  alternates: { canonical: await consensusPageUrl("/terms") },
+  };
+}
 
 export default function Terms() {
   return (

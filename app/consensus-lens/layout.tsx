@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CONSENSUS_ORIGIN, consensusBasePath } from "./links";
+import { consensusBasePath, consensusPageUrl } from "./links";
 import styles from "./site.module.css";
 import Arrow from "./arrow";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(CONSENSUS_ORIGIN),
+export async function generateMetadata(): Promise<Metadata> {
+  const url = await consensusPageUrl();
+  return {
+  metadataBase: new URL(url),
   title: { default: "Consensus Lens", template: "%s | Consensus Lens" },
   description: "A personal research tool for understanding analyst-consensus changes alongside historical stock prices.",
   icons: { icon: "/consensus-lens-mark.svg" },
@@ -14,9 +16,10 @@ export const metadata: Metadata = {
     description: "Analyst sentiment, in context. A personal, read-only research tool.",
     siteName: "Consensus Lens",
     type: "website",
-    url: CONSENSUS_ORIGIN,
+    url,
   },
-};
+  };
+}
 
 export default async function ConsensusLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const base = await consensusBasePath();

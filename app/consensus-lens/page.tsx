@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CONSENSUS_ORIGIN, consensusBasePath } from "./links";
+import { consensusBasePath, consensusPageUrl } from "./links";
 import styles from "./site.module.css";
 import Arrow from "./arrow";
 
-export const metadata: Metadata = { alternates: { canonical: CONSENSUS_ORIGIN } };
+export async function generateMetadata(): Promise<Metadata> {
+  return { alternates: { canonical: await consensusPageUrl() } };
+}
 
 export default async function ConsensusHome() {
   const base = await consensusBasePath();

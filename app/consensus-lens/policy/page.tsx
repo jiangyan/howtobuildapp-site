@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { CONSENSUS_ORIGIN } from "../links";
+import { consensusPageUrl } from "../links";
 import styles from "../site.module.css";
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  return {
   title: "Privacy Policy",
   description: "How the personal Consensus Lens tool accesses, uses, stores, and handles Google user data.",
-  alternates: { canonical: `${CONSENSUS_ORIGIN}/policy` },
-};
+  alternates: { canonical: await consensusPageUrl("/policy") },
+  };
+}
 
 export default function PrivacyPolicy() {
   return (
