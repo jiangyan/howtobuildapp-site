@@ -44,7 +44,7 @@ export default function PrivacyPolicy() {
       <p>The public homepage, privacy page, and terms page do not request Gmail access, offer account registration, or contain the private research dataset. The pages have no advertising or analytics code. The hosting provider, Vercel, receives ordinary request information needed to serve the website, such as IP addresses, browser information, and requested URLs. See <a href="https://vercel.com/legal/privacy-policy">Vercel’s Privacy Policy</a> for its handling of that information.</p>
 
       <h2>7. Google API user data</h2>
-      <p>Consensus Lens’s use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including its Limited Use requirements. Google data is used only for the personal research functionality described here.</p>
+      <p>Consensus Lens limits the use and transfer of information received from Google APIs to the personal research functionality described here, in accordance with the Limited Use requirements of the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>. This statement does not represent Google verification or an independent security certification.</p>
 
       <h2>8. Contact and changes</h2>
       <p>Questions about this policy can be sent to <a href="mailto:jiangyan@howtobuild.app">jiangyan@howtobuild.app</a>. Do not include tokens, credentials, or raw financial emails in a support message. Material changes to the app’s data handling should be reflected in this page before the changed functionality is used.</p>
