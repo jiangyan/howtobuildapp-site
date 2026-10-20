@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CONSENSUS_ORIGIN, consensusBasePath } from "./links";
 import styles from "./site.module.css";
+import Arrow from "./arrow";
 
 export const metadata: Metadata = {
   metadataBase: new URL(CONSENSUS_ORIGIN),
@@ -24,13 +25,13 @@ export default async function ConsensusLayout({ children }: Readonly<{ children:
       <a className={styles.skip} href="#consensus-content">Skip to content</a>
       <header className={styles.header}>
         <Link className={styles.brand} href={base || "/"} aria-label="Consensus Lens home">
-          <span className={styles.mark} aria-hidden="true">c<span>l</span></span>
+          <img className={styles.mark} src="/consensus-lens-mark.svg" width="38" height="38" alt="" />
           Consensus Lens
         </Link>
         <nav className={styles.nav} aria-label="Consensus Lens navigation">
           <Link href={`${base}/policy`}>Privacy</Link>
           <Link href={`${base}/terms`}>Terms</Link>
-          <a className={styles.contact} href="mailto:jiangyan@howtobuild.app">Contact <span aria-hidden="true">↗</span></a>
+          <a className={styles.contact} href="mailto:jiangyan@howtobuild.app">Contact <span><Arrow /></span></a>
         </nav>
       </header>
       <main id="consensus-content" className={styles.main}>{children}</main>
